@@ -103,6 +103,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bots\Magik_Omar_Khayyam_Bot.cs" />
+    <Compile Include="Bots\Token.cs" />
+    <Compile Include="Core\IBot.cs" />
+    <Compile Include="Core\IToken.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

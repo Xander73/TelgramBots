@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1
@@ -33,7 +27,7 @@ namespace WindowsFormsApp1
         async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker;
-            var key = e.Argument as String;
+            var key = e.Argument as string;
             try
             {
                 var Bot = new Telegram.Bot.TelegramBotClient(key);
@@ -42,12 +36,12 @@ namespace WindowsFormsApp1
 
                 var ud = await Bot.GetUpdatesAsync(offset);
 
-                foreach (var v in ud)
-                {
-                    //var mes = v.Message;
-                    //var keyBoard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Раз"));
-                    //await Bot.SendTextMessageAsync(mes.Chat.Id, "Reply кнопка работает", Telegram.Bot.Types.Enums.ParseMode.Default, false, false, 0, keyBoard);
-                }
+                //foreach (var v in ud)
+                //{
+                //    //var mes = v.Message;
+                //    //var keyBoard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Раз"));
+                //    //await Bot.SendTextMessageAsync(mes.Chat.Id, "Reply кнопка работает", Telegram.Bot.Types.Enums.ParseMode.Default, false, false, 0, keyBoard);
+                //}
 
                 while (true)
                 {
@@ -65,7 +59,8 @@ namespace WindowsFormsApp1
                             }
                             if (message.Text == "/ibuttons")    //inline buttons
                             {
-                                var keyBoard = new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup(
+                                var keyBoard = new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup
+                                    (
                                     new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardButton[][]
                                     {
                                         new []
@@ -97,8 +92,6 @@ namespace WindowsFormsApp1
             {
                 Console.WriteLine(ex.Message);
             }
-
-
         }
         
         private void initilizePoems()
@@ -119,7 +112,7 @@ namespace WindowsFormsApp1
 
         private string processingAndReturnReply() 
         {
-            Random rn = new Random();
+            Random rn = new Random();   //random poem
             return Poems[rn.Next(0, 1305)];
         }
 
