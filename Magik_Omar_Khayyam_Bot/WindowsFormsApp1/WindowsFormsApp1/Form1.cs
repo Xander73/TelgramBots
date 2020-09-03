@@ -11,9 +11,7 @@ namespace WindowsFormsApp1
 
         public Form1()
         {
-            InitializeComponent();
-
-            notifyIcon1.Visible = false;
+            InitializeComponent();            
            
             initilizePoems();
 

@@ -8,8 +8,8 @@ namespace WindowsFormsApp1.Core
 {
     interface IBot
     {
-        Task<Telegram.Bot.Types.Message> botsAnswerAsync (Telegram.Bot.Types.Message message);
+     //   async Task<Telegram.Bot.Types.Message> botsAnswerAsync (Telegram.Bot.Types.Message message);
 
-        void botsWork();
+       //async void botsWork();
     }
 }

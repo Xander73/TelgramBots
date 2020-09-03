@@ -24,7 +24,7 @@ namespace WindowsFormsApp1
             {
                 icon.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
                 icon.ContextMenu = new ContextMenu(
-                    new[]
+                    new []
                     {
                 new MenuItem("Show form", (s, e) => form.Show()),
                 new MenuItem("Hide form", (s, e) => form.Hide()),
