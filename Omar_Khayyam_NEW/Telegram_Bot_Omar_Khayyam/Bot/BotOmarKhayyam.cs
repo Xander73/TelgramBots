@@ -1,28 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp1
+using Telegram_Bot_Omar_Khayyam.Interfaces;
+using static Telegram_Bot_Omar_Khayyam.Interfaces.IBot;
+
+namespace Telegram_Bot_Omar_Khayyam.Bot
 {
-    public partial class Form1 : Form
+    class BotOmarKhayyam : IBot
     {
         BackgroundWorker bw;
-        string[] Poems;
-
-        public Form1()
+        private string[] Poems;
+        public BotOmarKhayyam()
         {
-            InitializeComponent();            
-           
-            initilizePoems();
+            bw = new BackgroundWorker();
+            bw.DoWork += bw_DoWork;
+            bw.RunWorkerAsync("859571517:AAFUDLZtmPVJK_xyhbP2Reqigr_xo0Lgh5M");    //token
 
-            this.bw = new BackgroundWorker();
-            this.bw.DoWork += bw_DoWork;
-                        
-            this.bw.RunWorkerAsync("859571517:AAFUDLZtmPVJK_xyhbP2Reqigr_xo0Lgh5M");    //token
-            Connect.Text = "Bot is runing";     //text on the button
+            initilizePoems();
         }
-                
-        async void bw_DoWork(object sender, DoWorkEventArgs e)
+
+        //public void AddHendler(object sender, DoWorkEventArgs e, )
+        //{
+        //    botHandler = bw_DoWork(this, new DoWorkEventArgs(this));
+        //}
+
+
+
+        public async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker;
             var key = e.Argument as string;
@@ -91,13 +98,21 @@ namespace WindowsFormsApp1
                 Console.WriteLine(ex.Message);
             }
         }
-        
+
+        private string processingAndReturnReply()
+        {
+            Random rn = new Random();   //random poem
+            return Poems[rn.Next(0, 1305)];
+        }
+
         private void initilizePoems()
         {
             Poems = new string[1306];    //1306 poems in file
-            string[] poemsTemp = WindowsFormsApp1.Properties.Resources.Poems.Split('\n');
+            string[] poemsTemp = Properties.Resources.Poems.Split('\n');
+            //WindowsFormsApp1.Properties.Resources.Poems.Split('\n');
             for (int i = 0; i < poemsTemp.Length; ++i)
             {
+                //all poems are separated by a line with numbers
                 if (int.TryParse(poemsTemp[i], out int tempIndex))  //if digit, the next line for us
                 {
                     while (i < poemsTemp.Length - 1 && !int.TryParse(poemsTemp[i + 1], out int o))
@@ -106,16 +121,6 @@ namespace WindowsFormsApp1
                     }
                 }
             }
-        }
-
-        private string processingAndReturnReply() 
-        {
-            Random rn = new Random();   //random poem
-            return Poems[rn.Next(0, 1305)];
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
 
         }
     }
