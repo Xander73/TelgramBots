@@ -5,31 +5,21 @@ using System.Text;
 using System.Windows.Forms;
 
 using Telegram_Bot_Omar_Khayyam.Interfaces;
-using static Telegram_Bot_Omar_Khayyam.Interfaces.IBot;
+using static Telegram_Bot_Omar_Khayyam.Interfaces.BaseBot;
 
 namespace Telegram_Bot_Omar_Khayyam.Bot
 {
-    class BotOmarKhayyam : IBot
+    class BotOmarKhayyam : BaseBot
     {
-        BackgroundWorker bw;
+
         private string[] Poems;
+
         public BotOmarKhayyam()
         {
-            bw = new BackgroundWorker();
-            bw.DoWork += bw_DoWork;
-            bw.RunWorkerAsync("859571517:AAFUDLZtmPVJK_xyhbP2Reqigr_xo0Lgh5M");    //token
-
             initilizePoems();
         }
 
-        //public void AddHendler(object sender, DoWorkEventArgs e, )
-        //{
-        //    botHandler = bw_DoWork(this, new DoWorkEventArgs(this));
-        //}
-
-
-
-        public async void bw_DoWork(object sender, DoWorkEventArgs e)
+        public override async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker;
             var key = e.Argument as string;

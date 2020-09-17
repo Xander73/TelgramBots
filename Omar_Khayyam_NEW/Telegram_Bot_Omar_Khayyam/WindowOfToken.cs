@@ -19,7 +19,7 @@ namespace Telegram_Bot_Omar_Khayyam
         {
             InitializeComponent();
 
-            IBot bot = new BotOmarKhayyam();        //композиция
+            BaseBot bot = new BotOmarKhayyam();        //композиция
 
             //context menu
             this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
