@@ -4,6 +4,7 @@
  * */
 
 using System;
+using System.Drawing;
 
 namespace Goal_Achievement_Control
 {
@@ -11,7 +12,14 @@ namespace Goal_Achievement_Control
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            /// <summary>
+            ///  The main entry point for the application.
+            /// </summary>        
+            /// 
+
+            MainBot.MainBot bot = new MainBot.MainBot();
+
+            Console.WriteLine("Bot started.");
         }
     }
 }

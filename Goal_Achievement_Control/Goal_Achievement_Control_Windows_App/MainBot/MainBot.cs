@@ -1,4 +1,4 @@
-﻿using Goal_Achievement_Control.Helpers;
+﻿using Goal_Achievement_Control_Windows_App.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,67 +8,11 @@ namespace Goal_Achievement_Control.MainBot
 {
     class MainBot : BaseBot.BaseBot
     {
-        public MainBot ()
+        List<Client> clients;
+
+        public MainBot()
         {
-            goals = new List<Goal>();
-        }
-
-        private List<Goal> goals;
-
-        public Goal Goal
-        {
-            get
-            {
-                for (int i = 0; i < goals.Count; ++i)
-                {
-                    Console.WriteLine(@"{i+1} v.Name;");
-                }
-                Console.WriteLine("Enter the target or the index");
-
-                string searchingTarget = Console.ReadLine().ToLower();
-                if (int.TryParse(searchingTarget, out int targetindex))
-                {
-                    if (targetindex - 1 >= 0 && targetindex - 1 < 15)
-                    {
-                        return goals[targetindex];
-                    }
-
-                    else 
-                    {
-                        Console.WriteLine("Index is wrong");
-                        return null;
-                    }
-                }
-                else 
-                {
-                    foreach (var v in goals)
-                    {
-                        if (v.Name == searchingTarget)
-                        {
-                            return v;
-                        }
-                        else
-                        {
-                            Console.WriteLine("The target not found.");
-                        }
-                    }
-                }
-
-                Console.WriteLine("The name is not finde");
-                return null;    //if not index and not finde a Name of target
-            }
-            set
-            {
-                if (goals.Count < 15)
-                {
-                    goals.Add(value);
-                    Console.WriteLine("Goal added.");
-                }
-                else
-                {
-                    Console.WriteLine("To much goals");
-                }
-            }
+            clients = new List<Client>();
         }
 
 
@@ -91,27 +35,77 @@ namespace Goal_Achievement_Control.MainBot
                     {
                         var message = v.Message;
                         if (message == null) return;
+
+                        //var IdCurrentClient = message.From.Id;        //ID пользователя
+                        int indexCurrentClient = -1;
+
+                        foreach (var c in clients)
+                        {
+                            if (c.ID == message.From.Id)
+                            {
+                                indexCurrentClient = clients.IndexOf(c);
+                            }
+                        }
+
+                        if (indexCurrentClient == -1)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
+                        {
+                            clients.Add(new Client(message));
+                            indexCurrentClient = clients.Count - 1;
+                        }
+
                         if (message.Type == Telegram.Bot.Types.Enums.MessageType.Text)
                         {
+
                             if (message.Text.ToLower() == "/вперед")
                             {
-                                if (isStarted = goals.Count > 3 ? true : false)
+                                if (isStarted = clients[indexCurrentClient].Goals.Count > 3 ? true : false)
                                 {
-                                    await Bot.SendTextMessageAsync(message.Chat.Id, "Вы уже начали путь к достижению цели", replyToMessageId: message.MessageId);
+                                    clients.Add(new Client(message));
+                                    await Bot.SendTextMessageAsync(message.Chat.Id, "Вы уже начали путь к достижению цели");
                                 }
                                 else
                                 {
-                                    await Bot.SendTextMessageAsync(message.Chat.Id, "Введите от 3 до 15 целей", replyToMessageId: message.MessageId);
-                                    while (true)
-                                    {
-                                        if (goals.Count > 2)
-                                        {
-                                            break;
-                                        }
+                                    await Bot.SendTextMessageAsync(message.Chat.Id, "Введите от 3 до 15 целей");
+                                    var s = await Bot.SendTextMessageAsync(message.Chat.Id, "Enter something");
+                                    int myID = message.From.Id;
+                                    await Bot.SendTextMessageAsync(message.Chat.Id, myID.ToString());
+                                    //for (int i = 1; i <= 15; ++i)
+                                    //{
+                                    //    if (clients[indexCurrentClient].Goals.Count > 3)
+                                    //    {                                            
+                                    //        await Bot.SendTextMessageAsync(message.Chat.Id, $"Еще необходимо ввести {2-i} целей");
+                                    //    }
+                                    //    else
+                                    //    {                                            
+                                    //        await Bot.SendTextMessageAsync(message.Chat.Id, @"Для прекращения введите /stop");
+                                    //    }
+                                    //}
 
-                                    }
+
+                                    //while (true)
+                                    //{
+                                    //    var keyBoard = new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardMarkup
+                                    //    (
+                                    //    new Telegram.Bot.Types.ReplyMarkups.InlineKeyboardButton[][]
+                                    //    {
+                                    //        new []
+                                    //        {
+                                    //            Telegram.Bot.Types.ReplyMarkups.InlineKeyboardButton.WithCallbackData ("Встряхнуть", "callBack1"),
+
+                                    //                    Telegram.Bot.Types.ReplyMarkups.InlineKeyboardButton.WithCallbackData("Положить", "callBack2"),
+                                    //                },
+                                    //            }
+                                    //            );
+                                    //    await Bot.SendTextMessageAsync(message.Chat.Id, "Инлайн кнопка работает", Telegram.Bot.Types.Enums.ParseMode.Default, false, false, 0, keyBoard);
+                                    //    if (clients[indexCurrentClient].Goals.Count > 2)
+                                    //    {
+                                    //        break;
+
+                                    //    }
+                                    //}
                                 }
                             }
+
                             {
                                 //if (message.Text == "/saysomething")    //answer
                                 //{
