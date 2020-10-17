@@ -1,5 +1,5 @@
 ﻿using Goal_Achievement_Control.BaseBot;
-using Goal_Achievement_Control.MainBot;
+using Goal_Achievement_Control.CurrentBot;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

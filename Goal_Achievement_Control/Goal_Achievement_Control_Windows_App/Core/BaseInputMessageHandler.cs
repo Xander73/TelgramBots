@@ -5,25 +5,20 @@ using System.Text;
 
 namespace Goal_Achievement_Control_Windows_App.Core
 {
-    enum TypeInputMessage
+    public enum TypeInputMessage
     {
         Command, Text, NONE
     }
-    abstract class InputMessageHandler
+    abstract class BaseInputMessageHandler
     {
-        public InputMessageHandler (Telegram.Bot.Types.Message inputMessage)
-        {
-
-        }
-
-        private TypeInputMessage RateTypeMessage (Telegram.Bot.Types.Message inputMessage)
+        public TypeInputMessage RateTypeMessage (Telegram.Bot.Types.Message inputMessage)
         {
             if (inputMessage.Type == Telegram.Bot.Types.Enums.MessageType.Text)
             {
                 string inputText = inputMessage.Text;   //чтобы не вызывать функцию несколько раз
                 if (inputText[0] == '/')
                 {
-                    CommandHendler(inputText);
+                    CommandHandler(inputText);
                     return TypeInputMessage.Command;
                 }
                 else
@@ -38,7 +33,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public abstract void CommandHendler (string commandText);
+        public abstract void CommandHandler (string commandText);
 
         public abstract void TextHandler(string text);
     }

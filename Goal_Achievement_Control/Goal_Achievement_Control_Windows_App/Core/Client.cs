@@ -1,17 +1,37 @@
-﻿using Goal_Achievement_Control.Helpers;
+﻿/*
+ * Класс содержит список целей, ID клиента, последнее сообщение и обработчик сообщений.
+ * */
+
+using Goal_Achievement_Control.Helpers;
 using System;
 using System.Collections.Generic;
+using Goal_Achievement_Control_Windows_App.Core;
 using System.Text;
 
 namespace Goal_Achievement_Control_Windows_App.Helpers
 {
     class Client    //client of bot
-    {        
+    {
         public Client(Telegram.Bot.Types.Message message)
         {
-            goals = new List<Goal>();
+            this.message = message;
+            goals = new List<Goal>(15); //15 is max goals
             id = message.From.Id;
+            messageHandler = new InputMessageHandler(this);
         }
+
+        private Telegram.Bot.Types.Message message;
+        public Telegram.Bot.Types.Message Message
+        {
+            get => message;
+            set
+            {
+                message = value;
+                messageHandler.RateTypeMessage(Message);
+            }
+
+        }
+        public InputMessageHandler messageHandler;
 
         private List<Goal> goals;
         public Goal Goal
@@ -75,7 +95,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             {
                 return goals;
             }
-        }
+        }   //получение доступа к списку goals;
 
         private int id;
         public int ID
