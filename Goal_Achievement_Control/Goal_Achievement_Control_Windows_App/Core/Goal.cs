@@ -17,6 +17,11 @@ namespace Goal_Achievement_Control.Helpers
             mark = new Dictionary<DateTime, short>();
         }
 
+        public Goal (string goal) : this ()
+        {
+            Name = goal;
+        }
+
         public string Name { get; set; }   //name of Goal
 
         private Dictionary<DateTime, short> mark = new Dictionary<DateTime, short>();    //goals achievement assessment

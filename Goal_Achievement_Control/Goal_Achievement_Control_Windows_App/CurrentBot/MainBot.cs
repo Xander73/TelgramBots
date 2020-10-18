@@ -1,5 +1,5 @@
 ﻿using Goal_Achievement_Control_Windows_App.Helpers;
-using Goal_Achievement_Control_Windows_App.Core;
+using Goal_Achievement_Control_Windows_App.CurrentBot;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,8 +55,8 @@ namespace Goal_Achievement_Control.CurrentBot
                             indexCurrentClient = clients.Count - 1;
                         }
 
-
-                        clients[indexCurrentClient].messageHandler.RateTypeMessage(message);
+                        await Bot.SendTextMessageAsync(message.Chat.Id, "Вы уже начали путь к достижению цели")
+                        clients[indexCurrentClient].Message = message;  //передавем значение и в свойстве запускаем обработчик сообщений
 
 
                         //if (message.Type == Telegram.Bot.Types.Enums.MessageType.Text)

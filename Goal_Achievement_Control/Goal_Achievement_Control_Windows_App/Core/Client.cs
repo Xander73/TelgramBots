@@ -5,15 +5,26 @@
 using Goal_Achievement_Control.Helpers;
 using System;
 using System.Collections.Generic;
-using Goal_Achievement_Control_Windows_App.Core;
+using Goal_Achievement_Control_Windows_App.CurrentBot;
 using System.Text;
 
 namespace Goal_Achievement_Control_Windows_App.Helpers
 {
+
+    public enum OperatingMode {AddGoal, DeleteGoal, NON};
+
     class Client    //client of bot
     {
+        private OperatingMode mode;     //режим работы бота, добавление целей, удаление целей, обычный (NON).
+        public OperatingMode Mode
+        { 
+            get => mode;
+            set => mode = value;
+        }
+
         public Client(Telegram.Bot.Types.Message message)
         {
+            Mode = OperatingMode.NON;
             this.message = message;
             goals = new List<Goal>(15); //15 is max goals
             id = message.From.Id;
@@ -102,6 +113,25 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         {
             get => id;
             set => id = value;
+        }
+
+        public string AddGoal (string goal)
+        {
+            Goal = new Goal (goal);
+            return "Цель добавлена";
+        }
+
+        public string DeleteGoal (string goal)
+        {
+            foreach (var g in Goals)
+            {
+                if (g.Name == goal)
+                    Goals.Remove(g);
+                return "Цель удалена";
+            }
+            return "Цель не найдена";
+
+            
         }
 
         
