@@ -55,7 +55,7 @@ namespace Goal_Achievement_Control.CurrentBot
                             indexCurrentClient = clients.Count - 1;
                         }
 
-                        await Bot.SendTextMessageAsync(message.Chat.Id, "Вы уже начали путь к достижению цели")
+                        await Bot.SendTextMessageAsync(message.Chat.Id, (clients[indexCurrentClient].Message = message).Text);
                         clients[indexCurrentClient].Message = message;  //передавем значение и в свойстве запускаем обработчик сообщений
 
 

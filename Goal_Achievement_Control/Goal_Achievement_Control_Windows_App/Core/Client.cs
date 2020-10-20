@@ -30,7 +30,6 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             id = message.From.Id;
             messageHandler = new InputMessageHandler(this);
         }
-
         private Telegram.Bot.Types.Message message;
         public Telegram.Bot.Types.Message Message
         {
@@ -38,7 +37,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             set
             {
                 message = value;
-                messageHandler.RateTypeMessage(Message);
+                message.Text = messageHandler.RateTypeMessage(Message); //
             }
 
         }
@@ -47,45 +46,45 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         private List<Goal> goals;
         public Goal Goal
         {
-            get
-            {
-                for (int i = 0; i < goals.Count; ++i)
-                {
-                    Console.WriteLine(@"{i+1} v.Name;");
-                }
-                Console.WriteLine("Enter the target or the index");
+            //private get
+            //{
+            //    for (int i = 0; i < goals.Count; ++i)
+            //    {
+            //        Console.WriteLine($"{i+1}: {goals[i].Name};");
+            //    }
+            //    Console.WriteLine("Enter the target or the index");
 
-                string searchingTarget = Console.ReadLine().ToLower();
-                if (int.TryParse(searchingTarget, out int targetindex))
-                {
-                    if (targetindex - 1 >= 0 && targetindex - 1 < goals.Count)
-                    {
-                        return goals[targetindex];
-                    }
-                    else
-                    {
-                        Console.WriteLine("Index is wrong");
-                        return null;
-                    }
-                }
-                else
-                {
-                    foreach (var v in goals)
-                    {
-                        if (v.Name == searchingTarget)
-                        {
-                            return v;
-                        }
-                        else
-                        {
-                            Console.WriteLine("The target not found.");
-                        }
-                    }
-                }
+            //    string searchingTarget = Console.ReadLine().ToLower();
+            //    if (int.TryParse(searchingTarget, out int targetindex))
+            //    {
+            //        if (targetindex - 1 >= 0 && targetindex - 1 < goals.Count)
+            //        {
+            //            return goals[targetindex];
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine("Index is wrong");
+            //            return null;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        foreach (var v in goals)
+            //        {
+            //            if (v.Name == searchingTarget)
+            //            {
+            //                return v;
+            //            }
+            //            else
+            //            {
+            //                Console.WriteLine("The target not found.");
+            //            }
+            //        }
+            //    }
 
-                Console.WriteLine("The name is not finde");
-                return null;    //if not index and not finde a Name of target
-            }
+            //    Console.WriteLine("The name is not finde");
+            //    return null;    //if not index and not finde a Name of target
+            //}
             set
             {
                 if (goals.Count < 15)

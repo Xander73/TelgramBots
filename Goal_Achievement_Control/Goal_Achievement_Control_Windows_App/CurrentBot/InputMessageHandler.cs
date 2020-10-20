@@ -33,7 +33,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 }
                 else
                 {
-                    client.Mode = OperatingMode.AddGoal;
+                    client.Mode = OperatingMode.AddGoal;        //режим ввода целей
                     return "Введите от 3 до 15 целей./nРежим редактирования открыт.";                    
                 }
             }
@@ -44,8 +44,13 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             }
             else if (commandText.ToLower () == "/остановить")
             {
-                client.Mode = OperatingMode.NON;
+                client.Mode = OperatingMode.NON;    //нет режима работы бота
                 return "Режим редактирования закрыт.";
+            }
+            else if (commandText.ToLower() == "/удалить")
+            {
+                client.Mode = OperatingMode.DeleteGoal;
+                return "Режим удаления открыт.";
             }
             else
             {
@@ -56,14 +61,11 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
         public override string TextHandler(string text)
         {
             if (client.Mode == OperatingMode.AddGoal)
-            {
-                
+            {                
                 return client.AddGoal(text); 
             }
-
             if (client.Mode == OperatingMode.DeleteGoal)
-            {
-                
+            {                
                 return client.DeleteGoal(text);
             }
             return "Неизвестный тип сообщения";
