@@ -13,7 +13,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
 
     public enum OperatingMode {AddGoal, DeleteGoal, NON};
 
-    class Client    //client of bot
+    class User    //client of bot
     {
         private OperatingMode mode;     //режим работы бота, добавление целей, удаление целей, обычный (NON).
         public OperatingMode Mode
@@ -22,11 +22,10 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             set => mode = value;
         }
 
-        public Client(Telegram.Bot.Types.Message message)
+        public User(Telegram.Bot.Types.Message message)
         {
             Mode = OperatingMode.NON;
             this.message = message;
-            goals = new List<Goal>(15); //15 is max goals
             id = message.From.Id;
             messageHandler = new InputMessageHandler(this);
         }
@@ -43,7 +42,6 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         }
         public InputMessageHandler messageHandler;
 
-        private List<Goal> goals;
         public Goal Goal
         {
             //private get
@@ -90,7 +88,6 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 if (goals.Count < 15)
                 {
                     goals.Add(value);
-                    Console.WriteLine("Goal added.");
                 }
                 else
                 {
@@ -98,15 +95,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 }
             }
         }
-
-        public List<Goal> Goals
-        {
-            get
-            {
-                return goals;
-            }
-        }   //получение доступа к списку goals;
-
+                
         private int id;
         public int ID
         {
@@ -116,7 +105,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
 
         public string AddGoal (string goal)
         {
-            Goal = new Goal (goal);
+            
             return "Цель добавлена";
         }
 

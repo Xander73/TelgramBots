@@ -3,18 +3,19 @@ using Goal_Achievement_Control_Windows_App.CurrentBot;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Goal_Achievement_Control_Windows_App.Core;
 using System.Text;
 
 namespace Goal_Achievement_Control.CurrentBot
 {
     class MainBot : BaseBot.BaseBot
     {
-        private List<Client> clients;
         private InputMessageHandler messageHandler;
+        public DataBase dataBase;
 
         public MainBot()
         {
-            clients = new List<Client>();
+            dataBase = new DataBase("Goal_Achievement_Control");
         }
 
 
@@ -37,26 +38,18 @@ namespace Goal_Achievement_Control.CurrentBot
                     {
                         var message = v.Message;
                         if (message == null) return;
-
-                        //var IdCurrentClient = message.From.Id;        //ID пользователя
-                        int indexCurrentClient = -1;
-
-                        foreach (var c in clients)
+                                                
+                        int idCurrentClient = dataBase.IdCurrentUser(message.From.Id);
+                        
+                        if (idCurrentClient == 0)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
                         {
-                            if (c.ID == message.From.Id)
-                            {
-                                indexCurrentClient = clients.IndexOf(c);
-                            }
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Приветствуем Вас.\nВведите от 3 до 15 целей, которые необходимо достичь.");
+                            dataBase.AddUser(message.From.Id.ToString());  //add new user    
+
                         }
 
-                        if (indexCurrentClient == -1)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
-                        {
-                            clients.Add(new Client(message));
-                            indexCurrentClient = clients.Count - 1;
-                        }
-
-                        await Bot.SendTextMessageAsync(message.Chat.Id, (clients[indexCurrentClient].Message = message).Text);
-                        clients[indexCurrentClient].Message = message;  //передавем значение и в свойстве запускаем обработчик сообщений
+                        await Bot.SendTextMessageAsync(message.Chat.Id, (clients[idCurrentClient].Message = message).Text);
+                        //clients[indexCurrentClient].Message = message;  //передавем значение и в свойстве запускаем обработчик сообщений
 
 
                         //if (message.Type == Telegram.Bot.Types.Enums.MessageType.Text)

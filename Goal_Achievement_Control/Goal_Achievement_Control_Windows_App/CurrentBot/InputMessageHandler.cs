@@ -10,8 +10,8 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
     class InputMessageHandler : BaseInputMessageHandler
     {
         //TypeInputMessage typeMessage;
-        Client client;
-        public InputMessageHandler(Client client)
+        User client;
+        public InputMessageHandler(User client)
         {
             this.client = client;
         }
@@ -50,7 +50,16 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             else if (commandText.ToLower() == "/удалить")
             {
                 client.Mode = OperatingMode.DeleteGoal;
-                return "Режим удаления открыт.";
+                return "Режим удаления открыт.\nВедите цель, которую требуется удалить.\nДля просмотра всех целей введите команду \"/Цели\".";
+            }
+            else if (commandText.ToLower() == "/цели")
+            {
+                string tempGoals = null ;
+                foreach (var g in client.Goals)
+                {
+                    tempGoals += g + "\n";
+                }
+                return tempGoals;
             }
             else
             {
@@ -61,8 +70,15 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
         public override string TextHandler(string text)
         {
             if (client.Mode == OperatingMode.AddGoal)
-            {                
-                return client.AddGoal(text); 
+            {
+                if (client.Goals.Count <= 15)
+                {
+                    return client.AddGoal(text);
+                }
+                else
+                {
+                    return "Введено максиальное количество целей.\nДля удаления цели введите команду \"/Удалить цель.\"";
+                }
             }
             if (client.Mode == OperatingMode.DeleteGoal)
             {                
