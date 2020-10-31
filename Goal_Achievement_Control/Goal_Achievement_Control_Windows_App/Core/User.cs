@@ -7,40 +7,40 @@ using System;
 using System.Collections.Generic;
 using Goal_Achievement_Control_Windows_App.CurrentBot;
 using System.Text;
+using Goal_Achievement_Control_Windows_App.Core;
+using Goal_Achievement_Control.CurrentBot;
 
 namespace Goal_Achievement_Control_Windows_App.Helpers
 {
-
-    public enum OperatingMode {AddGoal, DeleteGoal, NON};
-
-    class User    //client of bot
+    
+    class User    
     {
         private OperatingMode mode;     //режим работы бота, добавление целей, удаление целей, обычный (NON).
-        public OperatingMode Mode
-        { 
-            get => mode;
-            set => mode = value;
-        }
-
-        public User(Telegram.Bot.Types.Message message)
-        {
-            Mode = OperatingMode.NON;
-            this.message = message;
-            id = message.From.Id;
-            messageHandler = new InputMessageHandler(this);
-        }
+        public OperatingMode Mode {get; set;}
         private Telegram.Bot.Types.Message message;
         public Telegram.Bot.Types.Message Message
         {
             get => message;
-            set
+            set     //устанавливает значение ьуыыфпу, обрабатывает входящее сообщение и присвает результат для дальнейшего вывода в сообщении пользователю.
             {
                 message = value;
-                message.Text = messageHandler.RateTypeMessage(Message); //
+                message.Text = messageHandler.RateTypeMessage(Message); 
             }
 
         }
         public InputMessageHandler messageHandler;
+
+        DataBase dataBase;
+
+        public User(DataBase db, int idCurrentUser, Telegram.Bot.Types.Message mes, OperatingMode mode = OperatingMode.NON)
+        {
+            messageHandler = new InputMessageHandler(this);
+            dataBase = db;
+            ID = idCurrentUser;
+            message = mes;  //не используется свойство, т.к. он начинает автоматически обрабатывать входящий текст
+            dataBase.GetUserMod(ID);
+        }
+        
 
         public Goal Goal
         {

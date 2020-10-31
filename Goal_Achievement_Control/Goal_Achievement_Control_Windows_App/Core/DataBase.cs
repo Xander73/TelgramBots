@@ -4,6 +4,8 @@ using System.Text;
 using System.Data.SQLite;
 using System.IO;
 using System.Data.Common;
+using Goal_Achievement_Control.CurrentBot;
+using System.Security.Cryptography;
 
 namespace Goal_Achievement_Control_Windows_App.Core
 {
@@ -34,6 +36,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     );
         }
 
+
         private string nameDataBase;
 
         public void AddData (string nameTable, string data)     //формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца), второй столбец, третий, ..."
@@ -49,15 +52,49 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public void AddUser(string telegramId)
+        public void AddUser(string telegramId, OperatingMode mode)
         {
             using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"insert into User values({NextId("User")}, {telegramId})";
+                    cmd.CommandText = $"insert into User values({NextId("User")}, {telegramId}, {mode.ToString()})";
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public OperatingMode GetUserMod (int id)
+        {
+            using (var connection = new SQLiteConnection($"Data Sourse = {nameDataBase}"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"select operatingMode from Users where id = {id}";
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        reader.Read();
+                        switch (reader["operatingMode"].ToString())
+                        {
+                            case "NON":
+                                {
+                                    return OperatingMode.NON;
+                                }
+                            case "AddGoal":
+                                {
+                                    return OperatingMode.AddGoal;
+                                }
+                            case "DeleteGoal":
+                                {
+                                    return OperatingMode.DeleteGoal;
+                                }
+                            default:
+                                return OperatingMode.Error;
+                        }                        
+                    }
                 }
             }
         }

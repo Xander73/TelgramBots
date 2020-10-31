@@ -8,6 +8,8 @@ using System.Text;
 
 namespace Goal_Achievement_Control.CurrentBot
 {
+    public enum OperatingMode { AddGoal, DeleteGoal, NON, Error };
+
     class MainBot : BaseBot.BaseBot
     {
         private InputMessageHandler messageHandler;
@@ -29,8 +31,6 @@ namespace Goal_Achievement_Control.CurrentBot
                 await Bot.SetWebhookAsync("");
                 int offset = 0;
 
-                bool isStarted = false;
-
                 while (true)
                 {
                     var updates = await Bot.GetUpdatesAsync(offset);
@@ -39,16 +39,19 @@ namespace Goal_Achievement_Control.CurrentBot
                         var message = v.Message;
                         if (message == null) return;
                                                 
-                        int idCurrentClient = dataBase.IdCurrentUser(message.From.Id);
+                        int idCurrentUser = dataBase.IdCurrentUser(message.From.Id);
                         
-                        if (idCurrentClient == 0)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
+                        if (idCurrentUser == 0)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
                         {
+                            dataBase.AddUser(message.From.Id.ToString(), OperatingMode.AddGoal);  //add new user    
                             await Bot.SendTextMessageAsync(message.Chat.Id, "Приветствуем Вас.\nВведите от 3 до 15 целей, которые необходимо достичь.");
-                            dataBase.AddUser(message.From.Id.ToString());  //add new user    
-
+                        }
+                        else
+                        {
+                            User user = new User(dataBase, idCurrentUser, message);
+                            await Bot.SendTextMessageAsync(message.Chat.Id, (user.Message = message).Text);
                         }
 
-                        await Bot.SendTextMessageAsync(message.Chat.Id, (clients[idCurrentClient].Message = message).Text);
                         //clients[indexCurrentClient].Message = message;  //передавем значение и в свойстве запускаем обработчик сообщений
 
 
