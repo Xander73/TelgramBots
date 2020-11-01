@@ -26,7 +26,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             AddTable("Goals",
                 @"[id] integer not null primary key autoincrement,
                 [Goal] nvarchar(250) null,
-                [user_id] integer not null"
+                [userId] integer not null"
                     );
 
             AddTable("Marks",
@@ -38,6 +38,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
 
         private string nameDataBase;
+        public string NameDataBase { get => nameDataBase; }
 
         public void AddData (string nameTable, string data)     //формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца), второй столбец, третий, ..."
         {            
@@ -46,7 +47,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {                    
-                    cmd.CommandText = $"insert into {nameTable} values({NextId(nameTable)}, {data})";
+                    cmd.CommandText = $"INSERT INTO {nameTable} VALUES({NextId(nameTable)}, {data})";
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -54,25 +55,38 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public void AddUser(string telegramId, OperatingMode mode)
         {
-            using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source=MyDB.db"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"insert into User values({NextId("User")}, {telegramId}, {mode.ToString()})";
+                    cmd.CommandText = $"INSERT INTO Users VALUES({NextId("Users")}, {telegramId}, '{mode}')";
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        public OperatingMode GetUserMod (int id)
+        public void AddGoal(string goal, int userId)
+        {
+            using (var connection = new SQLiteConnection($"Data Source=MyDB.db"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"INSERT INTO Goals VALUES({NextId("Goals")}, '{goal}', {userId})";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public OperatingMode GetUserMod(int id)
         {
             using (var connection = new SQLiteConnection($"Data Sourse = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"select operatingMode from Users where id = {id}";
+                    cmd.CommandText = $"SELECT operatingMode FROM Users WHERE id = {id}";
 
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -93,35 +107,22 @@ namespace Goal_Achievement_Control_Windows_App.Core
                                 }
                             default:
                                 return OperatingMode.Error;
-                        }                        
+                        }
                     }
-                }
-            }
-        }
-
-        public void AddGoal (string telegramId, string goal)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"insert into Goals values({NextId("Goals")}, {telegramId})";
-                    cmd.ExecuteNonQuery();
                 }
             }
         }
 
         public int NextId(string nameTable)
         {
-            using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source=MyDB.db"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
 
                     //определение текущего ID                    
-                    cmd.CommandText = $"select max(id) from {nameTable}";
+                    cmd.CommandText = $"SELECT MAX(id) FROM {nameTable}";
                     using (var reader = cmd.ExecuteReader())
                     {
                         reader.Read();
@@ -140,11 +141,11 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 {
 
                     //определение текущего ID                    
-                    cmd.CommandText = $"select id from Users where telegramId == {telegramId}";
+                    cmd.CommandText = $"SELECT id FROM Users WHERE telegramId == {telegramId}";
                     using (var reader = cmd.ExecuteReader())
                     {
                         reader.Read();
-                        return int.TryParse(reader[0].ToString(), out int res) ? res : 0;                        
+                        return int.TryParse(reader[0].ToString(), out int result) ? result : 0;                        
                     }
                 }
             }
@@ -157,7 +158,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $@"create table if not exists [{nameTable}]({columns});";
+                    cmd.CommandText = $@"CREATE TABLE IF NOT EXISTS [{nameTable}]({columns});";
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -171,13 +172,13 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = @"create table if not exists [TestTable](
-                                [id] integer not null primary key autoincrement,
-                                [value] nvarchar(2048) null
+                    cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [TestTable](
+                                [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                                [value] NVARCHAR(1000) NULL
                             );";
                     cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = "insert into TestTable (value) values(:value)";
+                    cmd.CommandText = "INSERT INTO TestTable (value) values(:value)";
                     cmd.Parameters.AddWithValue("value", "abc");
                     cmd.ExecuteNonQuery();
                     

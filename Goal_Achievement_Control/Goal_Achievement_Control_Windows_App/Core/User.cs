@@ -9,6 +9,8 @@ using Goal_Achievement_Control_Windows_App.CurrentBot;
 using System.Text;
 using Goal_Achievement_Control_Windows_App.Core;
 using Goal_Achievement_Control.CurrentBot;
+using System.Data.SQLite;
+using System.Data;
 
 namespace Goal_Achievement_Control_Windows_App.Helpers
 {
@@ -85,14 +87,14 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             //}
             set
             {
-                if (goals.Count < 15)
-                {
-                    goals.Add(value);
-                }
-                else
-                {
-                    Console.WriteLine("To much goals");
-                }
+                //if (goals.Count < 15)
+                //{
+                //    goals.Add(value);
+                //}
+                //else
+                //{
+                //    Console.WriteLine("To much goals");
+                //}
             }
         }
                 
@@ -105,7 +107,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
 
         public string AddGoal (string goal)
         {
-            
+            dataBase.AddGoal(goal, ID);
             return "Цель добавлена";
         }
 
@@ -120,6 +122,21 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             return "Цель не найдена";
 
             
+        }
+
+        public int CountGoals ()
+        {
+            using (var connection = new SQLiteConnection ($"Data Sourse = {dataBase.NameDataBase}"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"SELECT Count (Goal) FROM Goals WHERE {ID} == userId";
+                    cmd.CommandType = CommandType.Text;
+
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
         }
 
         

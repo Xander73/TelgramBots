@@ -10,21 +10,22 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
     class InputMessageHandler : BaseInputMessageHandler
     {
         //TypeInputMessage typeMessage;
-        User client;
+        User user;
         public InputMessageHandler(User client)
         {
-            this.client = client;
+            this.user = client;
         }
 
         public override string CommandHandler(string commandText)
         {
             if (commandText.ToLower () == "/вперед" || commandText.ToLower() == "/start")
             {
-                if (client.Goals.Count > 3)
+
+                if (user.CountGoals() > 3)
                 {
-                    if (client.Goals.Count < 15)
+                    if (user.CountGoals() < 15)
                     {
-                        return "Вы уже начали путь к достижению цели.\nЧтобы добавить еще одну цель введите команду \"/Добаить цель\".";
+                        return "Вы уже начали путь к достижению цели. Необходимо минимум 3 цели.\nЧтобы добавить еще одну цель введите команду \"/Добаить цель\".";
                     } 
                     else
                     {
@@ -33,29 +34,29 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 }
                 else
                 {
-                    client.Mode = OperatingMode.AddGoal;        //режим ввода целей
+                    user.Mode = OperatingMode.AddGoal;        //режим ввода целей
                     return "Введите от 3 до 15 целей./nРежим редактирования открыт.";                    
                 }
             }
             else if (commandText.ToLower () == "/добавить цель")
             {
-                client.Mode = OperatingMode.AddGoal;
-                return "Режим редактирования открыт.";
+                user.Mode = OperatingMode.AddGoal;
+                return "Режим редактирования целей открыт.";
             }
             else if (commandText.ToLower () == "/остановить")
             {
-                client.Mode = OperatingMode.NON;    //нет режима работы бота
+                user.Mode = OperatingMode.NON;    //нет режима работы бота
                 return "Режим редактирования закрыт.";
             }
             else if (commandText.ToLower() == "/удалить")
             {
-                client.Mode = OperatingMode.DeleteGoal;
+                user.Mode = OperatingMode.DeleteGoal;
                 return "Режим удаления открыт.\nВедите цель, которую требуется удалить.\nДля просмотра всех целей введите команду \"/Цели\".";
             }
             else if (commandText.ToLower() == "/цели")
             {
                 string tempGoals = null ;
-                foreach (var g in client.Goals)
+                foreach (var g in user.Goals)
                 {
                     tempGoals += g + "\n";
                 }
@@ -69,20 +70,20 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
 
         public override string TextHandler(string text)
         {
-            if (client.Mode == OperatingMode.AddGoal)
+            if (user.Mode == OperatingMode.AddGoal)
             {
-                if (client.Goals.Count <= 15)
+                if (user.CountGoals() < 15)
                 {
-                    return client.AddGoal(text);
+                    return user.AddGoal(text);
                 }
                 else
                 {
                     return "Введено максиальное количество целей.\nДля удаления цели введите команду \"/Удалить цель.\"";
                 }
             }
-            if (client.Mode == OperatingMode.DeleteGoal)
+            if (user.Mode == OperatingMode.DeleteGoal)
             {                
-                return client.DeleteGoal(text);
+                return user.DeleteGoal(text);
             }
             return "Неизвестный тип сообщения";
         }
