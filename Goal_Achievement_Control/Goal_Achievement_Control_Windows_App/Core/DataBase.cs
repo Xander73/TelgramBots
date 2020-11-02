@@ -6,6 +6,7 @@ using System.IO;
 using System.Data.Common;
 using Goal_Achievement_Control.CurrentBot;
 using System.Security.Cryptography;
+using System.Data.SqlClient;
 
 namespace Goal_Achievement_Control_Windows_App.Core
 {
@@ -163,6 +164,58 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 }
             }
         }
+
+        public void ChangeOperatingMode (int userId, OperatingMode mode)
+        {
+            using (var connection = new SQLiteConnection($"Data Sourse = {nameDataBase}"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"UPDATE Users SET operatingMode = '{mode}' WHERE id = {userId}";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+       
+        public List<string> GetGoals (int userId)     
+        {
+            using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"SELECT Goal FROM Goals WHERE userId == {userId}";
+                    cmd.ExecuteNonQuery();
+
+                    List<string> resultate = null;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        for (int i = 1; reader.Read(); ++i)
+                        {
+                            resultate.Add($"{i}. {reader["Goal"]}\n");
+                        }
+                        return resultate;
+                    }
+                }
+            }
+        }
+
+        public string DeleteGoal (int userId, int goalIndex)
+        {
+            List<string> goals = GetGoals(userId);
+
+            using (var connection = new SqlConnection ($"Data Source = {nameDataBase}"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[goalIndex-1]}'";
+                    return goals[goalIndex - 1] + " удалена";
+                }
+            }
+        }
+
         void temp()
         {
             if (!File.Exists("testDB.db"))

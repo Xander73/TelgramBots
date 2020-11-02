@@ -40,20 +40,21 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             }
             else if (commandText.ToLower () == "/добавить цель")
             {
-                user.Mode = OperatingMode.AddGoal;
+                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddGoal);
                 return "Режим редактирования целей открыт.";
             }
             else if (commandText.ToLower () == "/остановить")
             {
-                user.Mode = OperatingMode.NON;    //нет режима работы бота
+                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);    //нет режима работы бота
                 return "Режим редактирования закрыт.";
             }
+            //---------
             else if (commandText.ToLower() == "/удалить")
             {
-                user.Mode = OperatingMode.DeleteGoal;
-                return "Режим удаления открыт.\nВедите цель, которую требуется удалить.\nДля просмотра всех целей введите команду \"/Цели\".";
+                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.DeleteGoal);
+                return $"Режим удаления открыт.\n{user.Goals}Введите номер цели, которую требуется удалить.\n";
             }
-            else if (commandText.ToLower() == "/цели")
+            else if (commandText.ToLower() == "/цели")  //вывести список целей
             {
                 string tempGoals = null ;
                 foreach (var g in user.Goals)
@@ -78,12 +79,12 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 }
                 else
                 {
-                    return "Введено максиальное количество целей.\nДля удаления цели введите команду \"/Удалить цель.\"";
+                    return $"Введено максиальное количество целей.\n{user.Goals}Введите номер цели, которую требуется удалить.\n";
                 }
             }
             if (user.Mode == OperatingMode.DeleteGoal)
-            {                
-                return user.DeleteGoal(text);
+            {
+                return user.DeleteGoal(Convert.ToInt32(text));
             }
             return "Неизвестный тип сообщения";
         }

@@ -32,7 +32,11 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         }
         public InputMessageHandler messageHandler;
 
-        DataBase dataBase;
+        private DataBase dataBase;
+        public DataBase DataBase
+        {
+            get => dataBase;
+        }
 
         public User(DataBase db, int idCurrentUser, Telegram.Bot.Types.Message mes, OperatingMode mode = OperatingMode.NON)
         {
@@ -43,6 +47,13 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             dataBase.GetUserMod(ID);
         }
         
+        public string Goals
+        {
+            get
+            {
+                return string.Concat(DataBase.GetGoals(ID));
+            }
+        }
 
         public Goal Goal
         {
@@ -110,18 +121,11 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             dataBase.AddGoal(goal, ID);
             return "Цель добавлена";
         }
-
-        public string DeleteGoal (string goal)
+        
+        public string DeleteGoal (int goalIndex)
         {
-            foreach (var g in Goals)
-            {
-                if (g.Name == goal)
-                    Goals.Remove(g);
-                return "Цель удалена";
-            }
-            return "Цель не найдена";
-
-            
+            DataBase.DeleteGoal(ID, goalIndex - 1);
+            return "Цель удалена";
         }
 
         public int CountGoals ()
