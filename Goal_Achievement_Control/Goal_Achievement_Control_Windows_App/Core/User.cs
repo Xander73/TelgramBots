@@ -51,7 +51,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         {
             get
             {
-                return string.Concat(DataBase.GetGoals(ID));
+                return string.Concat(DataBase.GetGoals(ID));    //DataBase.GetGoals(ID) возвращает список строк, для вывода целей объединяем их в одну
             }
         }
 

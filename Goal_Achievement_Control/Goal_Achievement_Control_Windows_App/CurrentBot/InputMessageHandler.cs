@@ -11,9 +11,9 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
     {
         //TypeInputMessage typeMessage;
         User user;
-        public InputMessageHandler(User client)
+        public InputMessageHandler(User user)
         {
-            this.user = client;
+            this.user = user;
         }
 
         public override string CommandHandler(string commandText)
@@ -35,33 +35,40 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 else
                 {
                     user.Mode = OperatingMode.AddGoal;        //режим ввода целей
-                    return "Введите от 3 до 15 целей./nРежим редактирования открыт.";                    
+                    return "Введите от 3 до 15 целей./nРежим редактирования целей открыт.";                    
                 }
             }
             else if (commandText.ToLower () == "/добавить цель")
             {
-                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddGoal);
-                return "Режим редактирования целей открыт.";
+                if (user.CountGoals() < 15)
+                {
+                    user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddGoal);
+                    return "Режим редактирования целей открыт.";
+                }    
+                else
+                {
+                    return "Введено максиальное количество целей.\nДля удаления цели введите команду \"/Удалить цель.\"";
+                }
             }
-            else if (commandText.ToLower () == "/остановить")
+            else if (commandText.ToLower () == "/остановить ввод целей")
             {
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);    //нет режима работы бота
-                return "Режим редактирования закрыт.";
+                return "Режим редактирования целей закрыт.";
             }
             //---------
             else if (commandText.ToLower() == "/удалить")
             {
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.DeleteGoal);
-                return $"Режим удаления открыт.\n{user.Goals}Введите номер цели, которую требуется удалить.\n";
+                return $"Режим удаления целей открыт.\n{user.Goals}\nВведите номер цели, которую требуется удалить.";
             }
             else if (commandText.ToLower() == "/цели")  //вывести список целей
+            {                
+                return user.Goals;
+            }
+            else if (commandText.ToLower() == "/ввести оценки")
             {
-                string tempGoals = null ;
-                foreach (var g in user.Goals)
-                {
-                    tempGoals += g + "\n";
-                }
-                return tempGoals;
+                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddMark);
+                return $"Режим ввода оценок открыт.\n{user.Goals}\nВведите через запятую оценки каждой цели по порядку";
             }
             else
             {
@@ -73,17 +80,19 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
         {
             if (user.Mode == OperatingMode.AddGoal)
             {
-                if (user.CountGoals() < 15)
+                if (user.CountGoals() < 15)     //
                 {
                     return user.AddGoal(text);
                 }
                 else
                 {
-                    return $"Введено максиальное количество целей.\n{user.Goals}Введите номер цели, которую требуется удалить.\n";
+                    user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);
+                    return $"Введено максиальное количество целей.\n{user.Goals}\nВведите номер цели, которую требуется удалить.\n";
                 }
             }
             if (user.Mode == OperatingMode.DeleteGoal)
             {
+                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);
                 return user.DeleteGoal(Convert.ToInt32(text));
             }
             return "Неизвестный тип сообщения";

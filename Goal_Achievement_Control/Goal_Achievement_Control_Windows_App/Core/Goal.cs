@@ -26,13 +26,13 @@ namespace Goal_Achievement_Control.Helpers
 
         private Dictionary<DateTime, short> mark = new Dictionary<DateTime, short>();    //goals achievement assessment
 
-        void AddNewEvaluation (short evaluation)
+        void AddNewMark (short mark)
         {
             bool isWrongValue = true;
             while (isWrongValue)
-            if (evaluation > 0 && evaluation <=10)
+            if (mark > 0 && mark <=10)
             {
-                mark.Add(DateTime.Now, evaluation);
+                this.mark.Add(DateTime.Now, mark);
                 isWrongValue = false;
             }
             else

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Goal_Achievement_Control.CurrentBot
 {
-    public enum OperatingMode { AddGoal, DeleteGoal, NON, Error };
+    public enum OperatingMode { AddGoal, DeleteGoal, Error, NON, AddMark };
 
     class MainBot : BaseBot.BaseBot
     {

@@ -32,6 +32,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
             AddTable("Marks",
                 @"[id] integer not null primary key autoincrement,
+                  [Data] nvarchar(15) not null,
                   [mark] nvarchar(3) null,
                   [goal_id] integer not null"
                     );
@@ -131,7 +132,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     }
                 }
             }
-        }
+        }       //следующий id для ввола строки в базу данных
 
         public int IdCurrentUser (int telegramId)
         {
