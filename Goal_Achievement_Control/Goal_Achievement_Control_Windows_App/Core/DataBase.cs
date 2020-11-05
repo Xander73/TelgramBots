@@ -81,6 +81,22 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
+        public void AddMarks(int userId, string[] marks, List<int> goalsId)
+        {            
+            using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    for (int i = 0; i < goalsId.Count; ++i)
+                    {
+                        cmd.CommandText = $@"INSERT INTO Marks VALUES ({NextId("Marks")}, '{DateTime.Now.Date.ToString()}', '{marks[i]}', {goalsId[i]})";
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
         public OperatingMode GetUserMod(int id)
         {
             using (var connection = new SQLiteConnection($"Data Sourse = {nameDataBase}"))
@@ -178,23 +194,23 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 }
             }
         }
-       
-        public List<string> GetGoals (int userId)     
+               
+        public Dictionary<int, string> GetGoals (int userId)     
         {
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"SELECT Goal FROM Goals WHERE userId == {userId}";
+                    cmd.CommandText = $"SELECT id, Goal FROM Goals WHERE userId == {userId}";
                     cmd.ExecuteNonQuery();
 
-                    List<string> resultate = null;
+                    Dictionary<int, string> resultate = null;
                     using (var reader = cmd.ExecuteReader())
                     {
                         for (int i = 1; reader.Read(); ++i)
                         {
-                            resultate.Add($"{i}. {reader["Goal"]}\n");
+                            resultate.Add((int)reader["id"], $"{i}. {reader["Goal"]}\n");
                         }
                         return resultate;
                     }
@@ -204,7 +220,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public string DeleteGoal (int userId, int goalIndex)
         {
-            List<string> goals = GetGoals(userId);
+            List<string> goals = new List<string>( GetGoals(userId).Values);
 
             using (var connection = new SqlConnection ($"Data Source = {nameDataBase}"))
             {

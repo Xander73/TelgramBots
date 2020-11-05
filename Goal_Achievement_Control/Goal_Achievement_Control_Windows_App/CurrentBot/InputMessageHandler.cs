@@ -68,7 +68,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             else if (commandText.ToLower() == "/ввести оценки")
             {
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddMark);
-                return $"Режим ввода оценок открыт.\n{user.Goals}\nВведите через запятую оценки каждой цели по порядку";
+                return $"Режим ввода оценок открыт.\n{user.Goals}\nВведите через запятую оценки каждой цели по порядку. Оценки должны быть от 0 до 10";
             }
             else
             {
@@ -90,12 +90,19 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                     return $"Введено максиальное количество целей.\n{user.Goals}\nВведите номер цели, которую требуется удалить.\n";
                 }
             }
-            if (user.Mode == OperatingMode.DeleteGoal)
+            else if (user.Mode == OperatingMode.DeleteGoal)
             {
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);
                 return user.DeleteGoal(Convert.ToInt32(text));
             }
-            return "Неизвестный тип сообщения";
+
+            else if (user.Mode == OperatingMode.AddMark)
+            {
+                return user.AddMarks(text);
+            }
+
+            user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);
+            return "Неизвестный тип сообщения.\nРежим работы переведен в начальный";
         }
     }
 }

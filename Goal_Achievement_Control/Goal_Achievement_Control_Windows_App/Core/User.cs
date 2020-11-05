@@ -51,8 +51,8 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         {
             get
             {
-                return string.Concat(DataBase.GetGoals(ID));    //DataBase.GetGoals(ID) возвращает список строк, для вывода целей объединяем их в одну
-            }
+                return string.Concat(DataBase.GetGoals(ID).Values);    //DataBase.GetGoals(ID) возвращает Dictionary<int, string>, для вывода целей 
+            }                                                          //выведем значения и объединим их в одну строку
         }
 
         public Goal Goal
@@ -142,7 +142,35 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 }
             }
         }
+        //-----------
+        public string AddMarks (string text)
+        {
+            string [] marks = text.Replace(" ", "").Split(',');
 
-        
+            List<int> goals = new List<int>(dataBase.GetGoals(ID).Keys);
+
+            if (marks.Length != goals.Count)
+            {
+                return "Разное количество оценок и целей. Повторите ввод оценок";
+            }
+
+            foreach (var v in marks)
+            {
+                if (!int.TryParse(v, out int res))
+                {
+                    return "Ошибка введенных данных. Не все оценки цифры. Повторите ввод оценок.";
+                }
+                else if (res < 0 || res > 10)
+                {
+                    return "Ошибка введенных данных. Не все оценки находтся в диапазоне от 0 до 10. Повторите ввод оценок.";
+                }
+            }
+
+            dataBase.AddMarks(ID, marks, goals);
+            dataBase.ChangeOperatingMode(ID, OperatingMode.NON);
+            return "Оценки добавлены";
+        }
+
+
     }
 }
