@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Goal_Achievement_Control_Windows_App.Core;
 using System.Text;
+using System.Threading;
 
 namespace Goal_Achievement_Control.CurrentBot
 {
@@ -14,12 +15,12 @@ namespace Goal_Achievement_Control.CurrentBot
     {
         private InputMessageHandler messageHandler;
         public DataBase dataBase;
+        readonly DateTime timeCheckingAssessmenGoals = new DateTime(0, 0, 0, 19, 0, 0);
 
         public MainBot()
         {
             dataBase = new DataBase("Goal_Achievement_Control");
         }
-
 
         public override async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -43,7 +44,7 @@ namespace Goal_Achievement_Control.CurrentBot
                         
                         if (idCurrentUser == 0)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
                         {
-                            dataBase.AddUser(message.From.Id.ToString(), OperatingMode.AddGoal);  //add new user    
+                            dataBase.AddUser(message.From.Id, message.Chat.Id, OperatingMode.AddGoal);  //add new user    
                             await Bot.SendTextMessageAsync(message.Chat.Id, "Приветствуем Вас.\nВведите от 3 до 15 целей, которые необходимо достичь.");
                         }
                         else
@@ -153,6 +154,31 @@ namespace Goal_Achievement_Control.CurrentBot
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private async void Timer ()
+        {
+            await CheckingAssessmenGoalsToday();
+        }
+
+        private void CheckingAssessmenGoalsToday()
+        {
+            while (true)
+            {
+                bool checkToday = false;
+
+                if (DateTime.Now.Hour >= timeCheckingAssessmenGoals.Hour && !checkToday)
+                {
+
+                    checkToday = true;
+                }
+                else
+                {
+
+                    Thread.Sleep(DateTime.Now);
+                }
+            }
+            
         }
     }
 }

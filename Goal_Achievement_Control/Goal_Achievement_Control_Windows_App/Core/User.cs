@@ -142,7 +142,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 }
             }
         }
-        //-----------
+
         public string AddMarks (string text)
         {
             string [] marks = text.Replace(" ", "").Split(',');

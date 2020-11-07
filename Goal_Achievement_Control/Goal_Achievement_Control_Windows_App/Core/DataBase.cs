@@ -17,10 +17,10 @@ namespace Goal_Achievement_Control_Windows_App.Core
             this.nameDataBase = nameDataBase + ".db";
             if (!File.Exists(this.nameDataBase))
                 SQLiteConnection.CreateFile(this.nameDataBase);
-
             AddTable("Users",
                 @"[id] integer not null primary key autoincrement,
                 [telegramId] integer not null,
+                [chatId] integer not null,
                 [operatingMode] nvarchar(50) not null"
                     );
 
@@ -55,14 +55,14 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public void AddUser(string telegramId, OperatingMode mode)
+        public void AddUser(int telegramId, long cahtId, OperatingMode mode)
         {
             using (var connection = new SQLiteConnection($"Data Source=MyDB.db"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"INSERT INTO Users VALUES({NextId("Users")}, {telegramId}, '{mode}')";
+                    cmd.CommandText = $"INSERT INTO Users VALUES({NextId("Users")}, {telegramId}, {cahtId}, '{mode}')";
                     cmd.ExecuteNonQuery();
                 }
             }
