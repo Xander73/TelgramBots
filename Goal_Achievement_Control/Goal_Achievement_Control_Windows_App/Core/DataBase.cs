@@ -23,11 +23,12 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 [chatId] integer not null,
                 [operatingMode] nvarchar(50) not null"
                     );
-
+            //----- добавил столбец
             AddTable("Goals",
                 @"[id] integer not null primary key autoincrement,
                 [Goal] nvarchar(250) null,
-                [userId] integer not null"
+                [userId] integer not null,
+                [isMarked] bool not null"
                     );
 
             AddTable("Marks",
