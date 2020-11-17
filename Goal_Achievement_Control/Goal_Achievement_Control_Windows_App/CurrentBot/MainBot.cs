@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 using Telegram.Bot;
+using System.Linq;
 
 namespace Goal_Achievement_Control.CurrentBot
 {
@@ -19,13 +20,12 @@ namespace Goal_Achievement_Control.CurrentBot
         private InputMessageHandler messageHandler;
         public DataBase dataBase;
         
-                    private readonly DateTime timeCheckingAssessmenGoals = new DateTime();
+                    private readonly int timeCheckingAssessmenGoals = 19;
 
         public MainBot()
         {
             dataBase = new DataBase("Goal_Achievement_Control");
-            Timer();
-            SendToBot("1", "1", "1");
+            TimerAsync();
             
         }
 
@@ -170,92 +170,115 @@ namespace Goal_Achievement_Control.CurrentBot
         }
 
         //-------------------
-        private void Timer ()
+
+        private async void TimerAsync()
         {
-            CheckingAssessmenGoalsToday();            
+            await Task.Run(() => CheckingAssessmenGoalsToday());   //асинхронно запускаем проверку пользователей на ежедневный ввод оценок
         }
 
-
-        private async void CheckingAssessmenGoalsToday()
+        private void CheckingAssessmenGoalsToday()
         {
-            await Task.Run(() => CheckingAssessmenGoalsTodayAsync());   //асинхронно запускаем проверку пользователей на ежедневный ввод оценок
-        }
-
-        private void CheckingAssessmenGoalsTodayAsync()
-        {
-            TaskCompletionSource<int> tsk = new TaskCompletionSource<int>();
-            DateTime dateLastCheck = DateTime.Now.AddDays(-1);
+            DataBase db = new DataBase("myDB");
+            DateTime dateLastCheck = DateTime.Today.AddHours(19).AddDays(-1);     //настоящий
             while (true)
             {
-                bool checkToday = false;
-
-                if (dateLastCheck != DateTime.Now.Date)
+                Console.WriteLine();
+                if (DateTime.Now.Hour >= dateLastCheck.Hour && DateTime.Now.Date > dateLastCheck.Date)      //если текущее время больше времени проверки и сегодняшняя дата больше даты последней проверки
                 {
-                    checkToday = false;
-                }
-
-                if (DateTime.Now.Hour >= timeCheckingAssessmenGoals.Hour && !checkToday)
-                {
-                    using (var Connection = new SQLiteConnection ($"Data Source = {dataBase.NameDataBase}"))
                     {
-                        Connection.Open();
-                        using (var cmd = Connection.CreateCommand())
+                        using (var Connection = new SQLiteConnection($"Data Source=MyDB.db"))
                         {
-                            int maxUsers;
-                            cmd.CommandText = "SELECT MAX(id) from Users";
-                            using (var reader = cmd.ExecuteReader())
+                            Connection.Open();
+                            using (var cmd = Connection.CreateCommand())
                             {
-                                reader.Read();
-                                maxUsers = reader[0] is int mu ? mu : (-1);   
-                            }
-
-                            if (maxUsers != (-1))
-                            {
-                                for (int i = 1; i <= maxUsers; ++i)
+                                Dictionary<string, string> telegramIdUsers = new Dictionary<string, string>();
+                                cmd.CommandText = "SELECT telegramId, id from Users";
+                                using (var reader = cmd.ExecuteReader())
                                 {
-                                    cmd.CommandText = $"SELECT Goal FROM Goals WHERE userId == {i} AND isMarked == false";
-                                    using (var reader = cmd.ExecuteReader())
+                                    while (reader.Read())
                                     {
-                                        List<string> tempGoals = new List<string>();
-                                        while (reader.Read())
+                                        telegramIdUsers.Add(reader["telegramId"].ToString(), reader["id"].ToString());
+                                    }
+                                }
+
+                                if (telegramIdUsers.Count != (0))
+                                {
+                                    for (int i = 0; i < telegramIdUsers.Count; ++i)
+                                    {
+                                        cmd.CommandText = $"SELECT Goal FROM Goals WHERE userId == {Convert.ToInt32(telegramIdUsers.ElementAt(i).Value)} AND isMarked == false";    //userId - id пользователя в таблице Users 
+                                        using (var reader = cmd.ExecuteReader())
                                         {
-                                            
-                                            if (reader["Goal"] is string s)
+                                            List<string> tempGoals = new List<string>();
+                                            while (reader.Read())
                                             {
-                                                tempGoals.Add(s);
+
+                                                if (reader["Goal"] is string s)
+                                                {
+                                                    tempGoals.Add(s);
+                                                }
+                                                else
+                                                {
+                                                    break;
+                                                }
                                             }
-                                            else
+                                            string goals = null;
+                                            foreach (var v in db.GetGoals(Convert.ToInt32(telegramIdUsers.ElementAt(i).Value)))    //DataBase.GetGoals(ID) возвращает Dictionary<int, string>, для вывода целей 
                                             {
-                                               // await 
+                                                goals += v.Value + '\n';     //выведем значения и объединим их в одну строку
                                             }
+                                            string messageToUser = $"Вы не поставили отметку следующим целям:\n{goals}\nДля ввода оценок введите команду - /ввести оценки";
+                                            SendToBotAsync(token, telegramIdUsers.ElementAt(i).Key, messageToUser).Wait();
                                         }
                                     }
                                 }
                             }
                         }
                     }
-
-
-                    dateLastCheck = DateTime.Now.Date;
-                    checkToday = true;
-                    Thread.Sleep(8640000); //8640000 - милисекунды в сутках
+                    Console.WriteLine("if");
+                    int d = Math.Abs((int)dateLastCheck.Subtract(DateTime.Now).TotalMilliseconds);
+                    if (d > 86400000)       //86400000 - милисекунды в сутках
+                    {
+                        d -= 86400000;
+                    }
+                    Console.WriteLine((24 * 60 * 60 * 1000) - d + 3600000);
+                    Thread.Sleep((24 * 60 * 60 * 1000) - d + 3600000); //(24 * 60 * 60) * 1000 - милисекунды в сутках + 3600000 милисекунд - поправочный коэффициент, т.к. время начинается с нуля
+                    dateLastCheck = dateLastCheck.AddDays(1);
                 }
                 else
                 {
-                    Thread.Sleep(timeCheckingAssessmenGoals.Millisecond - DateTime.Now.TimeOfDay.Milliseconds);
+                    int d = Math.Abs((int)dateLastCheck.Subtract(DateTime.Now).TotalMilliseconds);
+                    if (d > 86400000)       //86400000 - милисекунды в сутках
+                    {
+                        d -= 86400000;
+                    }
+                    Thread.Sleep((24 * 60 * 60 * 1000) - d + 3600000); //(24 * 60 * 60) * 1000 - милисекунды в сутках + 3600000 милисекунд - поправочный коэффициент, т.к. время начинается с нуля
                 }
             }
         }
-
-        private async Task SendToBot (string token, string idUser, string text)
+        
+        private async Task SendToBotAsync (string token, string idUser, string text)
         {
-            string id = "1283387864";
-            string tok = "859571517:AAFUDLZtmPVJK_xyhbP2Reqigr_xo0Lgh5M";
+            //string id = "1283387864";
+            //string tok = token;
 
-            TelegramBotClient bot = new TelegramBotClient("859571517:AAFUDLZtmPVJK_xyhbP2Reqigr_xo0Lgh5M");
-            var v = await bot.SendTextMessageAsync(id, "/1");
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                try
+                {
+                    TelegramBotClient bot = new TelegramBotClient(token);
+                    var v = await bot.SendTextMessageAsync(idUser, text);
+                    //bot.DeleteMessageAsync(id, v.MessageId);
+                }
+                catch (ArgumentException e)
+                {
+                    System.IO.File.AppendAllText ("Connect.Error.txt", $"{e.Message}\n");
+                }
 
-            //bot.DeleteMessageAsync(id, v.MessageId);
+                catch (Exception e)
+                {
+                    System.IO.File.AppendAllText("ConnectError.txt", $"{e.Message}\n");
+                }
+            }
         }
     }
 }

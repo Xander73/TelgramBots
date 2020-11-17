@@ -18,11 +18,11 @@ namespace Goal_Achievement_Control_Windows_App.Core
             if (!File.Exists(this.nameDataBase))
                 SQLiteConnection.CreateFile(this.nameDataBase);
             AddTable("Users",
-                @"[id] integer not null primary key autoincrement,
-                [telegramId] integer not null,
-                [chatId] integer not null,
+                            @"[id] integer not null primary key autoincrement,
+                [telegramId] nvarchar(50) not null,
+                [chatId] nvarchar(50) not null,
                 [operatingMode] nvarchar(50) not null"
-                    );
+                                );
             //----- добавил столбец
             AddTable("Goals",
                 @"[id] integer not null primary key autoincrement,
@@ -33,7 +33,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
             AddTable("Marks",
                 @"[id] integer not null primary key autoincrement,
-                  [Data] nvarchar(15) not null,
+                  [Date] nvarchar(15) not null,
                   [mark] nvarchar(3) null,
                   [goal_id] integer not null"
                     );
@@ -56,14 +56,14 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public void AddUser(int telegramId, long cahtId, OperatingMode mode)
+        public void AddUser(string telegramId, string cahtId, OperatingMode mode)
         {
-            using (var connection = new SQLiteConnection($"Data Source=MyDB.db"))
+            using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"INSERT INTO Users VALUES({NextId("Users")}, {telegramId}, {cahtId}, '{mode}')";
+                    cmd.CommandText = $"INSERT INTO Users VALUES({NextId("Users")}, '{telegramId}', '{cahtId}', '{mode}')";
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -76,14 +76,14 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"INSERT INTO Goals VALUES({NextId("Goals")}, '{goal}', {userId})";
+                    cmd.CommandText = $"INSERT INTO Goals VALUES({NextId("Goals")}, '{goal}', {userId}, false)";
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
         public void AddMarks(int userId, string[] marks, List<int> goalsId)
-        {            
+        {
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
@@ -195,8 +195,8 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 }
             }
         }
-               
-        public Dictionary<int, string> GetGoals (int userId)     
+
+        public Dictionary<long, string> GetGoals(int userId)
         {
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
@@ -206,12 +206,17 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     cmd.CommandText = $"SELECT id, Goal FROM Goals WHERE userId == {userId}";
                     cmd.ExecuteNonQuery();
 
-                    Dictionary<int, string> resultate = null;
+                    Dictionary<long, string> resultate = new Dictionary<long, string>();
                     using (var reader = cmd.ExecuteReader())
                     {
+                        Console.WriteLine(reader.IsClosed);
                         for (int i = 1; reader.Read(); ++i)
                         {
-                            resultate.Add((int)reader["id"], $"{i}. {reader["Goal"]}\n");
+                            resultate.Add((long)reader["id"], $"{i}. {reader["Goal"]}\n");
+                        }
+                        foreach (var v in resultate)
+                        {
+                            Console.WriteLine($"Key - {v.Key},       Value - {v.Value}");
                         }
                         return resultate;
                     }

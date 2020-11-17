@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
+using System.Security.Principal;
 
 namespace Goal_Achievement_Control.BaseBot
 {
@@ -9,15 +10,13 @@ namespace Goal_Achievement_Control.BaseBot
     {
         //delegate void BotHandlerDel(object obj, DoWorkEventArgs e);
 
-        BackgroundWorker bw;
-
+        private BackgroundWorker bw;
+        protected const string token = "859571517:AAFUDLZtmPVJK_xyhbP2Reqigr_xo0Lgh5M";
         public BaseBot()
         {
             bw = new BackgroundWorker();
             bw.DoWork += bw_DoWork;
-            bw.RunWorkerAsync("859571517:AAFUDLZtmPVJK_xyhbP2Reqigr_xo0Lgh5M");    //token
-
-
+            bw.RunWorkerAsync(token);    //token
         }
 
         public abstract void bw_DoWork(object sender, DoWorkEventArgs e);

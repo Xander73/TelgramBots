@@ -11,14 +11,15 @@ using Goal_Achievement_Control_Windows_App.Core;
 using Goal_Achievement_Control.CurrentBot;
 using System.Data.SQLite;
 using System.Data;
+using System.Security.Principal;
 
 namespace Goal_Achievement_Control_Windows_App.Helpers
 {
-    
-    class User    
+
+    class User
     {
         private OperatingMode mode;     //режим работы бота, добавление целей, удаление целей, обычный (NON).
-        public OperatingMode Mode {get; set;}
+        public OperatingMode Mode { get; set; }
         private Telegram.Bot.Types.Message message;
         public Telegram.Bot.Types.Message Message
         {
@@ -26,7 +27,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             set     //устанавливает значение ьуыыфпу, обрабатывает входящее сообщение и присвает результат для дальнейшего вывода в сообщении пользователю.
             {
                 message = value;
-                message.Text = messageHandler.RateTypeMessage(Message); 
+                message.Text = messageHandler.RateTypeMessage(Message);
             }
 
         }
@@ -38,21 +39,28 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             get => dataBase;
         }
 
+        public User()  {}
+
         public User(DataBase db, int idCurrentUser, Telegram.Bot.Types.Message mes, OperatingMode mode = OperatingMode.NON)
         {
             messageHandler = new InputMessageHandler(this);
             dataBase = db;
             ID = idCurrentUser;
             message = mes;  //не используется свойство, т.к. он начинает автоматически обрабатывать входящий текст
-            dataBase.GetUserMod(ID);
+            dataBase.GetUserMod(ID);            
         }
         
         public string Goals
         {
             get
             {
-                return string.Concat(DataBase.GetGoals(ID).Values);    //DataBase.GetGoals(ID) возвращает Dictionary<int, string>, для вывода целей 
-            }                                                          //выведем значения и объединим их в одну строку
+                string temp = null;
+                foreach (var v in dataBase.GetGoals(ID))    //DataBase.GetGoals(ID) возвращает Dictionary<int, string>, для вывода целей 
+                {
+                    temp += v.Value + '\n';     //выведем значения и объединим их в одну строку
+                }
+                return temp;    
+            }                                                          
         }
 
         public Goal Goal
