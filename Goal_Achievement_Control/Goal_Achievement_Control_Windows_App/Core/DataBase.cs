@@ -160,11 +160,15 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 {
 
                     //определение текущего ID                    
-                    cmd.CommandText = $"SELECT id FROM Users WHERE telegramId == {telegramId}";
+                    cmd.CommandText = $"SELECT id FROM Users WHERE telegramId == '{telegramId.ToString()}'";
                     using (var reader = cmd.ExecuteReader())
                     {
-                        reader.Read();
-                        return int.TryParse(reader[0].ToString(), out int result) ? result : 0;                        
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            return int.TryParse(reader["id"].ToString(), out int result) ? result : 0;
+                        }
+                        return 0;                                                
                     }
                 }
             }
@@ -238,6 +242,51 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 }
             }
         }
+
+        public void MarksLastFourWeeks()
+        {
+            using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    int userId = 3;
+                    string telId = "Tid3";
+                    List<int> goalsId = new List<int>();
+                    cmd.CommandText = $"SELECT id FROM Goals WHERE Goals.userId == {userId}";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader["id"] is int i)
+                        {
+                            goalsId.Add(i);
+                        }
+                        else
+                        {
+                            Console.WriteLine("ID Вашей команды не является чилом.");
+                        }
+                    }
+
+                    for (int i = 0; i < goalsId.Count - 1; i++)
+                    {
+                        cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
+                            $"JOIN Goals ON Users.id == Goals.userId " +
+                            $"JOIN Marks ON Goals.id == Marks.goal_id " +
+                            $"WHERE Goals.id == '{goalsId[i]}' " +
+                            $"ORDER BY Goals.id DESC " +
+                            $"LIMIT 28";        //28 дней - 4 недели
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            int count = 1;
+                            while (reader.Read())
+                            {
+                                Console.WriteLine($"{count++}. telegramId - {reader["telegramId"]}, Goal - {reader["Goal"]}, Date - {reader["Date"]}, mark - {reader["mark"]}");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
         void temp()
         {

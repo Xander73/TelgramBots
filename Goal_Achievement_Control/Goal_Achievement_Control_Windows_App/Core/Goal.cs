@@ -14,31 +14,22 @@ namespace Goal_Achievement_Control.Helpers
     {
         public Goal()
         {
-            mark = new Dictionary<DateTime, short>();
-        }
-
-        public Goal (string goal) : this ()
-        {
-            Name = goal;
-        }
+            
+        }        
 
         public string Name { get; set; }   //name of Goal
 
-        private Dictionary<DateTime, short> mark = new Dictionary<DateTime, short>();    //goals achievement assessment
+        private List<Dictionary<DateTime, int>> marks = new List<Dictionary<DateTime, int>>();    //goals achievement assessment
 
-        void AddNewMark (short mark)
+        public List<Dictionary<DateTime, int>> Marks
         {
-            bool isWrongValue = true;
-            while (isWrongValue)
-            if (mark > 0 && mark <=10)
+            get => marks;
+
+            set
             {
-                this.mark.Add(DateTime.Now, mark);
-                isWrongValue = false;
-            }
-            else
-            {
-                Console.WriteLine("Wrong value.\nPlease, repeat.");
-            }
+                marks.AddRange (new List<Dictionary<DateTime, int>> (value));
+            }           
         }
+
     }
 }

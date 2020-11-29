@@ -20,7 +20,7 @@ namespace Goal_Achievement_Control.CurrentBot
         private InputMessageHandler messageHandler;
         public DataBase dataBase;
         
-                    private readonly int timeCheckingAssessmenGoals = 19;
+        private readonly int timeCheckingAssessmenGoals = 19;
 
         public MainBot()
         {
@@ -169,8 +169,6 @@ namespace Goal_Achievement_Control.CurrentBot
             }
         }
 
-        //-------------------
-
         private async void TimerAsync()
         {
             await Task.Run(() => CheckingAssessmenGoalsToday());   //асинхронно запускаем проверку пользователей на ежедневный ввод оценок
@@ -234,13 +232,11 @@ namespace Goal_Achievement_Control.CurrentBot
                             }
                         }
                     }
-                    Console.WriteLine("if");
                     int d = Math.Abs((int)dateLastCheck.Subtract(DateTime.Now).TotalMilliseconds);
                     if (d > 86400000)       //86400000 - милисекунды в сутках
                     {
                         d -= 86400000;
                     }
-                    Console.WriteLine((24 * 60 * 60 * 1000) - d + 3600000);
                     Thread.Sleep((24 * 60 * 60 * 1000) - d + 3600000); //(24 * 60 * 60) * 1000 - милисекунды в сутках + 3600000 милисекунд - поправочный коэффициент, т.к. время начинается с нуля
                     dateLastCheck = dateLastCheck.AddDays(1);
                 }
@@ -255,7 +251,7 @@ namespace Goal_Achievement_Control.CurrentBot
                 }
             }
         }
-        
+
         private async Task SendToBotAsync (string token, string idUser, string text)
         {
             //string id = "1283387864";

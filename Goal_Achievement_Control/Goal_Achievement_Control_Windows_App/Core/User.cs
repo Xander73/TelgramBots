@@ -155,9 +155,9 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         {
             string [] marks = text.Replace(" ", "").Split(',');
 
-            List<int> goals = new List<int>(dataBase.GetGoals(ID).Keys);
+            //List<int> goals = new List<int>(dataBase.GetGoals(ID).Keys);
 
-            if (marks.Length != goals.Count)
+           // if (marks.Length != goals.Count)
             {
                 return "Разное количество оценок и целей. Повторите ввод оценок";
             }
@@ -174,7 +174,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 }
             }
 
-            dataBase.AddMarks(ID, marks, goals);
+            //dataBase.AddMarks(ID, marks, goals);
             dataBase.ChangeOperatingMode(ID, OperatingMode.NON);
             return "Оценки добавлены";
         }
