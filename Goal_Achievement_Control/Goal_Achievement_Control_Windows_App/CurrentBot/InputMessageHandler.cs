@@ -59,16 +59,16 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             else if (commandText.ToLower() == "/удалить")
             {
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.DeleteGoal);
-                return $"Режим удаления целей открыт.\n{user.Goals}\nВведите номер цели, которую требуется удалить.";
+                return $"Режим удаления целей открыт.\n{user.GoalsToString}\nВведите номер цели, которую требуется удалить.";
             }
             else if (commandText.ToLower() == "/цели")  //вывести список целей
             {                
-                return user.Goals;
+                return user.GoalsToString;
             }
             else if (commandText.ToLower() == "/ввести оценки")
             {
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddMark);
-                return $"Режим ввода оценок открыт.\n{user.Goals}\nВведите через запятую оценки каждой цели по порядку. Оценки должны быть от 0 до 10";
+                return $"Режим ввода оценок открыт.\n{user.GoalsToString}\nВведите через запятую оценки каждой цели по порядку. Оценки должны быть от 0 до 10";
             }
             else
             {
@@ -87,7 +87,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 else
                 {
                     user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);
-                    return $"Введено максиальное количество целей.\n{user.Goals}\nВведите номер цели, которую требуется удалить.\n";
+                    return $"Введено максиальное количество целей.\n{user.GoalsToString}\nВведите номер цели, которую требуется удалить.\n";
                 }
             }
             else if (user.Mode == OperatingMode.DeleteGoal)

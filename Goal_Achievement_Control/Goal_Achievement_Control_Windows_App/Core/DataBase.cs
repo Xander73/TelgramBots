@@ -239,21 +239,23 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public void MarksLastFourWeeks(User user)
+        public string MarksLastFourWeeks(User user)
         {
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    List<int> goalsId = new List<int>(GetGoals(user.ID).Keys);
+                    List<int> idGoals = new List<int>(user.Goals.Keys);
+                    string resultate = null;
 
-                    for (int i = 0; i < goalsId.Count - 1; i++)
+                    for (int i = 0; i < idGoals.Count - 1; i++)
                     {
+                        string tempResultate = user.Goals[idGoals[i]].ToString() + "\n\n";
                         cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
                             $"JOIN Goals ON Users.id == Goals.userId " +
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
-                            $"WHERE Goals.id == '{goalsId[i]}' " +
+                            $"WHERE Goals.id == '{idGoals[i]}' " +
                             $"ORDER BY Goals.id DESC " +
                             $"LIMIT 28";        //28 дней = 4 недели
                         using (var reader = cmd.ExecuteReader())
@@ -261,9 +263,10 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             int count = 1;
                             while (reader.Read())
                             {
-                                Console.WriteLine($"{count++}. telegramId - {reader["telegramId"]}, Goal - {reader["Goal"]}, Date - {reader["Date"]}, mark - {reader["mark"]}");
+                                tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
                             }
                         }
+                        resultate += tempResultate + "______________________________________________";
                     }
                 }
             }

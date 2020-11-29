@@ -51,7 +51,12 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
 
         private Dictionary<int, string> goals;
 
-        public string Goals
+        public Dictionary<int, string> Goals
+        {
+            get => goals;
+            set => goals = value;
+        }
+        public string GoalsToString
         {
             get
             {
