@@ -1,13 +1,6 @@
 ﻿using Goal_Achievement_Control.BaseBot;
 using Goal_Achievement_Control.CurrentBot;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using System.Windows.Forms;
 
 namespace Goal_Achievement_Control_Windows_App

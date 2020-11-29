@@ -18,18 +18,16 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
 
     class User
     {
-        private OperatingMode mode;     //режим работы бота, добавление целей, удаление целей, обычный (NON).
         public OperatingMode Mode { get; set; }
         private Telegram.Bot.Types.Message message;
         public Telegram.Bot.Types.Message Message
         {
             get => message;
-            set     //устанавливает значение ьуыыфпу, обрабатывает входящее сообщение и присвает результат для дальнейшего вывода в сообщении пользователю.
+            set     //устанавливает значение message, обрабатывает входящее сообщение и присвает результат для дальнейшего вывода в сообщении пользователю.
             {
                 message = value;
                 message.Text = messageHandler.RateTypeMessage(Message);
             }
-
         }
         public InputMessageHandler messageHandler;
 
@@ -45,17 +43,20 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         {
             messageHandler = new InputMessageHandler(this);
             dataBase = db;
-            ID = idCurrentUser;
-            message = mes;  //не используется свойство, т.к. он начинает автоматически обрабатывать входящий текст
-            dataBase.GetUserMod(ID);            
+            ID = idCurrentUser; //ID в базе данных
+            message = mes;  //не используется свойство, т.к. оно начинает автоматически обрабатывать входящий текст
+            dataBase.GetUserMod(ID);
+            goals = dataBase.GetGoals(ID);
         }
-        
+
+        private Dictionary<int, string> goals;
+
         public string Goals
         {
             get
             {
                 string temp = null;
-                foreach (var v in dataBase.GetGoals(ID))    //DataBase.GetGoals(ID) возвращает Dictionary<int, string>, для вывода целей 
+                foreach (var v in goals)    //DataBase.GetGoals(ID) возвращает Dictionary<int, string>, для вывода целей 
                 {
                     temp += v.Value + '\n';     //выведем значения и объединим их в одну строку
                 }
@@ -117,7 +118,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             }
         }
                 
-        private int id;
+        private int id; //ID в базе данных приложения
         public int ID
         {
             get => id;
@@ -162,7 +163,9 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 return "Разное количество оценок и целей. Повторите ввод оценок";
             }
 
+#pragma warning disable CS0162 // Обнаружен недостижимый код
             foreach (var v in marks)
+#pragma warning restore CS0162 // Обнаружен недостижимый код
             {
                 if (!int.TryParse(v, out int res))
                 {
@@ -178,7 +181,5 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             dataBase.ChangeOperatingMode(ID, OperatingMode.NON);
             return "Оценки добавлены";
         }
-
-
     }
 }

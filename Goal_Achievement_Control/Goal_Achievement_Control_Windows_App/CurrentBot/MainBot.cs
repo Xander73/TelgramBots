@@ -17,17 +17,23 @@ namespace Goal_Achievement_Control.CurrentBot
 
     class MainBot : BaseBot.BaseBot
     {
+#pragma warning disable CS0169 // Поле "MainBot.messageHandler" никогда не используется.
         private InputMessageHandler messageHandler;
+#pragma warning restore CS0169 // Поле "MainBot.messageHandler" никогда не используется.
         public DataBase dataBase;
         
+#pragma warning disable CS0414 // Полю "MainBot.timeCheckingAssessmenGoals" присвоено значение, но оно ни разу не использовано.
         private readonly int timeCheckingAssessmenGoals = 19;
+#pragma warning restore CS0414 // Полю "MainBot.timeCheckingAssessmenGoals" присвоено значение, но оно ни разу не использовано.
 
         public MainBot()
         {
-            dataBase = new DataBase("Goal_Achievement_Control");
+            dataBase = new DataBase(DATA_BASE_NAME);
             TimerAsync();
             
         }
+
+        private const string DATA_BASE_NAME = "Goal_Achievement_Control";
 
         public override async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -49,21 +55,21 @@ namespace Goal_Achievement_Control.CurrentBot
                                                 
                         int idCurrentUser = dataBase.IdCurrentUser(message.From.Id);
 
-                        if (message.Text == "/й")
+                        //if (message.Text == "/й")
+                        //{
+                        //    await Bot.SendTextMessageAsync(message.Chat.Id, "Работает");
+                        //}    
+
+                        if (idCurrentUser == 0)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
                         {
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Работает");
-                        }    
-                        
-                        //if (idCurrentUser == 0)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
-                        //{
-                        //    dataBase.AddUser(message.From.Id, message.Chat.Id, OperatingMode.AddGoal);  //add new user    
-                        //    await Bot.SendTextMessageAsync(message.Chat.Id, "Приветствуем Вас.\nВведите от 3 до 15 целей, которые необходимо достичь.");
-                        //}
-                        //else
-                        //{
-                        //    User user = new User(dataBase, idCurrentUser, message);
-                        //    await Bot.SendTextMessageAsync(message.Chat.Id, (user.Message = message).Text);
-                        //}
+                            dataBase.AddUser(message.From.Id.ToString(), message.Chat.Id.ToString(), OperatingMode.AddGoal);  //add new user    
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Приветствуем Вас.\nВведите от 3 до 15 целей, которые необходимо достичь.");
+                        }
+                        else
+                        {
+                            User user = new User(dataBase, idCurrentUser, message);
+                            await Bot.SendTextMessageAsync(message.Chat.Id, (user.Message = message).Text);
+                        }
                         {
                             //clients[indexCurrentClient].Message = message;  //передавем значение и в свойстве запускаем обработчик сообщений
 
@@ -176,7 +182,7 @@ namespace Goal_Achievement_Control.CurrentBot
 
         private void CheckingAssessmenGoalsToday()
         {
-            DataBase db = new DataBase("myDB");
+            DataBase db = new DataBase(DATA_BASE_NAME);
             DateTime dateLastCheck = DateTime.Today.AddHours(19).AddDays(-1);     //настоящий
             while (true)
             {
@@ -184,7 +190,7 @@ namespace Goal_Achievement_Control.CurrentBot
                 if (DateTime.Now.Hour >= dateLastCheck.Hour && DateTime.Now.Date > dateLastCheck.Date)      //если текущее время больше времени проверки и сегодняшняя дата больше даты последней проверки
                 {
                     {
-                        using (var Connection = new SQLiteConnection($"Data Source=MyDB.db"))
+                        using (var Connection = new SQLiteConnection($"Data Source = {dataBase.NameDataBase}"))
                         {
                             Connection.Open();
                             using (var cmd = Connection.CreateCommand())

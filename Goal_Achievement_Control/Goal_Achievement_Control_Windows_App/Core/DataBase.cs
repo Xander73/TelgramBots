@@ -7,6 +7,7 @@ using System.Data.Common;
 using Goal_Achievement_Control.CurrentBot;
 using System.Security.Cryptography;
 using System.Data.SqlClient;
+using Goal_Achievement_Control_Windows_App.Helpers;
 
 namespace Goal_Achievement_Control_Windows_App.Core
 {
@@ -200,7 +201,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public Dictionary<long, string> GetGoals(int userId)
+        public Dictionary<int, string> GetGoals(int userId)
         {
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
@@ -210,17 +211,12 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     cmd.CommandText = $"SELECT id, Goal FROM Goals WHERE userId == {userId}";
                     cmd.ExecuteNonQuery();
 
-                    Dictionary<long, string> resultate = new Dictionary<long, string>();
+                    Dictionary<int, string> resultate = new Dictionary<int, string>();
                     using (var reader = cmd.ExecuteReader())
                     {
-                        Console.WriteLine(reader.IsClosed);
                         for (int i = 1; reader.Read(); ++i)
                         {
-                            resultate.Add((long)reader["id"], $"{i}. {reader["Goal"]}\n");
-                        }
-                        foreach (var v in resultate)
-                        {
-                            Console.WriteLine($"Key - {v.Key},       Value - {v.Value}");
+                            resultate.Add((int)reader["id"], $"{i}. {reader["Goal"]}\n");
                         }
                         return resultate;
                     }
@@ -243,28 +239,14 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public void MarksLastFourWeeks()
+        public void MarksLastFourWeeks(User user)
         {
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    int userId = 3;
-                    string telId = "Tid3";
-                    List<int> goalsId = new List<int>();
-                    cmd.CommandText = $"SELECT id FROM Goals WHERE Goals.userId == {userId}";
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader["id"] is int i)
-                        {
-                            goalsId.Add(i);
-                        }
-                        else
-                        {
-                            Console.WriteLine("ID Вашей команды не является чилом.");
-                        }
-                    }
+                    List<int> goalsId = new List<int>(GetGoals(user.ID).Keys);
 
                     for (int i = 0; i < goalsId.Count - 1; i++)
                     {
@@ -273,7 +255,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
                             $"WHERE Goals.id == '{goalsId[i]}' " +
                             $"ORDER BY Goals.id DESC " +
-                            $"LIMIT 28";        //28 дней - 4 недели
+                            $"LIMIT 28";        //28 дней = 4 недели
                         using (var reader = cmd.ExecuteReader())
                         {
                             int count = 1;
