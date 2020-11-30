@@ -260,7 +260,6 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             $"LIMIT 28";        //28 дней = 4 недели
                         using (var reader = cmd.ExecuteReader())
                         {
-                            int count = 1;
                             while (reader.Read())
                             {
                                 tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
@@ -268,6 +267,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                         }
                         resultate += tempResultate + "______________________________________________";
                     }
+                    return resultate;
                 }
             }
         }
