@@ -17,14 +17,7 @@ namespace Goal_Achievement_Control.CurrentBot
 
     class MainBot : BaseBot.BaseBot
     {
-#pragma warning disable CS0169 // Поле "MainBot.messageHandler" никогда не используется.
-        private InputMessageHandler messageHandler;
-#pragma warning restore CS0169 // Поле "MainBot.messageHandler" никогда не используется.
         public DataBase dataBase;
-        
-#pragma warning disable CS0414 // Полю "MainBot.timeCheckingAssessmenGoals" присвоено значение, но оно ни разу не использовано.
-        private readonly int timeCheckingAssessmenGoals = 19;
-#pragma warning restore CS0414 // Полю "MainBot.timeCheckingAssessmenGoals" присвоено значение, но оно ни разу не использовано.
 
         public MainBot()
         {
@@ -186,24 +179,23 @@ namespace Goal_Achievement_Control.CurrentBot
             DateTime dateLastCheck = DateTime.Today.AddHours(19).AddDays(-1);     //настоящий
             while (true)
             {
-                Console.WriteLine();
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+                {
+                    List<string> usersIdApp = new List<string>(dataBase.Users.Values);
+                    foreach (string v in usersIdApp)
+                    {
+                        dataBase.MarksLastFourWeeks(Convert.ToInt32(v));
+                    }
+                }
                 if (DateTime.Now.Hour >= dateLastCheck.Hour && DateTime.Now.Date > dateLastCheck.Date)      //если текущее время больше времени проверки и сегодняшняя дата больше даты последней проверки
                 {
-                    {
+                    
                         using (var Connection = new SQLiteConnection($"Data Source = {dataBase.NameDataBase}"))
                         {
                             Connection.Open();
                             using (var cmd = Connection.CreateCommand())
                             {
-                                Dictionary<string, string> telegramIdUsers = new Dictionary<string, string>();
-                                cmd.CommandText = "SELECT telegramId, id from Users";
-                                using (var reader = cmd.ExecuteReader())
-                                {
-                                    while (reader.Read())
-                                    {
-                                        telegramIdUsers.Add(reader["telegramId"].ToString(), reader["id"].ToString());
-                                    }
-                                }
+                                Dictionary<string, string> telegramIdUsers = dataBase.Users;                                
 
                                 if (telegramIdUsers.Count != (0))
                                 {
@@ -237,7 +229,6 @@ namespace Goal_Achievement_Control.CurrentBot
                                 }
                             }
                         }
-                    }
                     int d = Math.Abs((int)dateLastCheck.Subtract(DateTime.Now).TotalMilliseconds);
                     if (d > 86400000)       //86400000 - милисекунды в сутках
                     {

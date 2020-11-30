@@ -201,6 +201,30 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
+        public Dictionary<string, string> Users
+        {
+            get
+            {
+                using (var Connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
+                {
+                    Connection.Open();
+                    using (var cmd = Connection.CreateCommand())
+                    {
+                        Dictionary<string, string> telegramIdUsers = new Dictionary<string, string>();
+                        cmd.CommandText = "SELECT telegramId, id from Users";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                telegramIdUsers.Add(reader["telegramId"].ToString(), reader["id"].ToString());
+                            }
+                            return telegramIdUsers;
+                        }
+                    }
+                }
+            }
+        }
+
         public Dictionary<int, string> GetGoals(int userId)
         {
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
@@ -239,19 +263,20 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public string MarksLastFourWeeks(User user)
+        public string MarksLastFourWeeks(int userId)    //ID в базе данных приложения
         {
+            Dictionary<int, string> Goals = GetGoals(userId);
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    List<int> idGoals = new List<int>(user.Goals.Keys);
+                    List<int> idGoals = new List<int>(Goals.Keys);
                     string resultate = null;
 
                     for (int i = 0; i < idGoals.Count - 1; i++)
                     {
-                        string tempResultate = user.Goals[idGoals[i]].ToString() + "\n\n";
+                        string tempResultate = Goals[idGoals[i]].ToString() + "\n\n";
                         cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
                             $"JOIN Goals ON Users.id == Goals.userId " +
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
@@ -265,7 +290,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                                 tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
                             }
                         }
-                        resultate += tempResultate + "______________________________________________";
+                        resultate += tempResultate + "______________________________________________\n\n";
                     }
                     return resultate;
                 }

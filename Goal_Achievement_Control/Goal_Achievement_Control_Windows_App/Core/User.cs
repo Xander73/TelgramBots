@@ -45,7 +45,6 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             dataBase = db;
             ID = idCurrentUser; //ID в базе данных
             message = mes;  //не используется свойство, т.к. оно начинает автоматически обрабатывать входящий текст
-            dataBase.GetUserMod(ID);
             goals = dataBase.GetGoals(ID);
         }
 
