@@ -74,6 +74,10 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             {
                 return user.DataBase.MarksLastFourWeeks(user.ID);
             }
+            else if (commandText.ToLower() == "/статистика")
+            {
+                return user.DataBase.MarksAll(user.ID);
+            }
             else 
             {
                 return "Неизвестная команда";
