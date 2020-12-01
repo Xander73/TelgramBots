@@ -70,7 +70,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddMark);
                 return $"Режим ввода оценок открыт.\n{user.GoalsToString}\nВведите через запятую оценки каждой цели по порядку. Оценки должны быть от 0 до 10";
             }
-            else if (commandText.ToLower() == "/оценки за 4 недели")
+            else if (commandText.ToLower() == "/статистика за 4 недели")
             {
                 return user.DataBase.MarksLastFourWeeks(user.ID);
             }
