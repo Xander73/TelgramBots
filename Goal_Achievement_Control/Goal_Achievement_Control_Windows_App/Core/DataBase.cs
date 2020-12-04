@@ -308,7 +308,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 using (var cmd = connection.CreateCommand())
                 {
                     List<int> idGoals = new List<int>(Goals.Keys);
-                    Dictionary<DateTime, int> DateMarks = new Dictionary<DateTime, int>();
+                    List<Pair<DateTime, int>> DateMarks = new List<Pair<DateTime, int>> ();
                     string resultate = null;
 
                     for (int i = 0; i < idGoals.Count - 1; i++)
@@ -325,7 +325,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             while (reader.Read())
                             {
                                 tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
-                                DateMarks.Add((DateTime)reader["Date"], (int)reader["mark"]);
+                                DateMarks.Add(new Pair<DateTime, int> ((DateTime)reader["Date"], (int)reader["mark"]));
                             }
                         }
                         resultate += tempResultate + "______________________________________________\n\n";
@@ -336,24 +336,31 @@ namespace Goal_Achievement_Control_Windows_App.Core
         }
 
         #region support_functions
-        private Pair<double> CalculatingAVGWeeks (Dictionary<DateTime, int> datesMarks)
+        private double CalculatingAVGWeeks (List<Pair<DateTime, int>> datesMarks)
         {
-            DateTime now = DateTime.Now;
-            var startDate = new DateTime(now.Year, now.Month, 1);
-            var endDate = startDate.AddMonths(1).AddDays(-1);
+            double markAVG = 0;
+            foreach (var dateMark in datesMarks)
+            {
+                markAVG += dateMark.Second;
+            }
+            return markAVG /= 7; //7 - days a week
 
-            int weeks = datesMarks.Count / 7;   //na
+            //DateTime now = DateTime.Now;
+            //var startDate = new DateTime(now.Year, now.Month, 1);
+            //var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            //int weeks = datesMarks.Count / 7;   //na
         }
 
-        private class Pair<T>
+        private class Pair<T, V>
         {
-            public Pair (T x, T y)
+            public Pair (T first, V second)
             {
-                X = x;
-                Y = y;
+                First = first;
+                Second = second;
             }
-            public T X { get; set; }
-            public T Y { get; set; }
+            public T First { get; set; }
+            public V Second { get; set; }
         }
         #endregion
 
