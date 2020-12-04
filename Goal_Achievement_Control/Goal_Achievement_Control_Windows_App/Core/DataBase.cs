@@ -297,8 +297,10 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public string MarksAll (int userId)
+        public string MarksAll(int userId)
         {
+            int CountWeeks = 0;
+            string MarksAVGMonths = null;
             Dictionary<int, string> Goals = GetGoals(userId);
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
@@ -306,21 +308,24 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 using (var cmd = connection.CreateCommand())
                 {
                     List<int> idGoals = new List<int>(Goals.Keys);
+                    Dictionary<DateTime, int> DateMarks = new Dictionary<DateTime, int>();
                     string resultate = null;
 
                     for (int i = 0; i < idGoals.Count - 1; i++)
-                    {
-                        string tempResultate = Goals[idGoals[i]].ToString() + "\n\n";
+                    {                        
+                        string tempResultate = Goals[idGoals[i]] + "\n\n";   //Названия целей
                         cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
                             $"JOIN Goals ON Users.id == Goals.userId " +
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
                             $"WHERE Goals.id == '{idGoals[i]}' " +
-                            $"ORDER BY Goals.id DESC ";        
+                            $"ORDER BY Goals.id DESC ";
                         using (var reader = cmd.ExecuteReader())
                         {
+
                             while (reader.Read())
                             {
                                 tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
+                                DateMarks.Add((DateTime)reader["Date"], (int)reader["mark"]);
                             }
                         }
                         resultate += tempResultate + "______________________________________________\n\n";
@@ -328,7 +333,29 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     return resultate;
                 }
             }
+        }
 
+        #region support_functions
+        private Pair<double> CalculatingAVGWeeks (Dictionary<DateTime, int> datesMarks)
+        {
+            DateTime now = DateTime.Now;
+            var startDate = new DateTime(now.Year, now.Month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            int weeks = datesMarks.Count / 7;   //na
+        }
+
+        private class Pair<T>
+        {
+            public Pair (T x, T y)
+            {
+                X = x;
+                Y = y;
+            }
+            public T X { get; set; }
+            public T Y { get; set; }
+        }
+        #endregion
 
         void temp()
         {
