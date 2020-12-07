@@ -265,18 +265,21 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public string MarksLastFourWeeks(int userId)    //ID в базе данных приложения
         {
-            Dictionary<int, string> Goals = GetGoals(userId);
+            Dictionary<int, string> goalsCurentUser = GetGoals(userId);
+            List<Pair<DateTime, int>> dateMarks = new List<Pair<DateTime, int>>();
+            List<Pair<string, double>> AVGMarks = new List<Pair<string, double>>();
+            string resultate = null;
+
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    List<int> idGoals = new List<int>(Goals.Keys);
-                    string resultate = null;
-
-                    for (int i = 0; i < idGoals.Count - 1; i++)
+                    List<int> idGoals = new List<int> (goalsCurentUser.Keys);
+                    for (int i = 0; i < goalsCurentUser.Count - 1; i++)
                     {
-                        string tempResultate = Goals[idGoals[i]].ToString() + "\n\n";
+                        
+                        string tempResultate = goalsCurentUser[i].ToString() + "\n\n";
                         cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
                             $"JOIN Goals ON Users.id == Goals.userId " +
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
@@ -287,10 +290,21 @@ namespace Goal_Achievement_Control_Windows_App.Core
                         {
                             while (reader.Read())
                             {
+                                dateMarks.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
                                 tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
+                                if (dateMarks.Count % 7 == 0 && dateMarks.Count != 0)
+                                {
+                                    AVGMarks.Add(new Pair<string, double> ($"Averege marks from {dateMarks[0].First} to {dateMarks[dateMarks.Count - 1].First}", CalculatingAVGWeeks(dateMarks)));
+                                }
                             }
                         }
                         resultate += tempResultate + "______________________________________________\n\n";
+
+                        foreach (var v in AVGMarks)
+                        {
+                            Console.WriteLine($"{v.First} - {v.Second};");
+                        }
+
                     }
                     return resultate;
                 }
@@ -343,7 +357,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             {
                 markAVG += dateMark.Second;
             }
-            return markAVG /= 7; //7 - days a week
+            return markAVG /= datesMarks.Count; 
 
             //DateTime now = DateTime.Now;
             //var startDate = new DateTime(now.Year, now.Month, 1);
