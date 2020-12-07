@@ -291,15 +291,20 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             while (reader.Read())
                             {
                                 dateMarks.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
-                                tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
-                                if (dateMarks.Count % 7 == 0 && dateMarks.Count != 0)
+                                if ((dateMarks.Count % 7 == 0 && dateMarks.Count != 0) || DateTime.Now.DayOfWeek == DayOfWeek.Monday)
                                 {
-                                    AVGMarks.Add(new Pair<string, double> ($"Averege marks from {dateMarks[0].First} to {dateMarks[dateMarks.Count - 1].First}", CalculatingAVGWeeks(dateMarks)));
+                                    AVGMarks.Add(new Pair<string, double>($"Average weekly score:\nfrom {dateMarks[0].First} to {dateMarks[dateMarks.Count - 1].First}", CalculatingAVGMark(dateMarks)));
+                                    dateMarks.Clear();
                                 }
+                                tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
                             }
                         }
                         resultate += tempResultate + "______________________________________________\n\n";
 
+                        if (AVGMarks.Count == 0)
+                        {
+                            Console.WriteLine("Вы недавно начали движение к цели. ");
+                        }
                         foreach (var v in AVGMarks)
                         {
                             Console.WriteLine($"{v.First} - {v.Second};");
@@ -313,44 +318,58 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public string MarksAll(int userId)
         {
-            int CountWeeks = 0;
-            string MarksAVGMonths = null;
-            Dictionary<int, string> Goals = GetGoals(userId);
+            Dictionary<int, string> goalsCurentUser = GetGoals(userId);
+            List<Pair<DateTime, int>> dateMarksWeek = new List<Pair<DateTime, int>>();
+            List<Pair<string, double>> AVGMarksWeeks = new List<Pair<string, double>>();
+            List<Pair<DateTime, int>> dateMarksAll = new List<Pair<DateTime, int>>();
+            List<Pair<string, double>> AVGMarksMonths = new List<Pair<string, double>>();
+            string resultate = null;
+
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    List<int> idGoals = new List<int>(Goals.Keys);
-                    List<Pair<DateTime, int>> DateMarks = new List<Pair<DateTime, int>> ();
-                    string resultate = null;
+                    List<int> idGoals = new List<int>(goalsCurentUser.Keys);
+                    for (int i = 0; i < goalsCurentUser.Count - 1; i++)
+                    {
 
-                    for (int i = 0; i < idGoals.Count - 1; i++)
-                    {                        
-                        string tempResultate = Goals[idGoals[i]] + "\n\n";   //Названия целей
+                        string tempResultate = goalsCurentUser[i].ToString() + "\n\n";
                         cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
                             $"JOIN Goals ON Users.id == Goals.userId " +
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
                             $"WHERE Goals.id == '{idGoals[i]}' " +
-                            $"ORDER BY Goals.id DESC ";
+                            $"ORDER BY Goals.id DESC";        
                         using (var reader = cmd.ExecuteReader())
                         {
-
                             while (reader.Read())
                             {
-                                tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
-                                DateMarks.Add(new Pair<DateTime, int> ((DateTime)reader["Date"], (int)reader["mark"]));
+                                dateMarksWeek.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"])); 
+                                if (dateMarksWeek.Count % 7 == 0 && dateMarksWeek.Count != 0)
+                                {
+                                    AVGMarksWeeks.Add(new Pair<string, double>($"Average weekly score:\nfrom {dateMarksWeek[0].First} to {dateMarksWeek[dateMarksWeek.Count - 1].First}", CalculatingAVGMark(dateMarksWeek)));
+                                    dateMarksWeek.Clear();
+                                }
+                                dateMarksAll.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
+
+                                tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";                                
                             }
                         }
                         resultate += tempResultate + "______________________________________________\n\n";
+
+                        foreach (var v in AVGMarksWeeks)
+                        {
+                            Console.WriteLine($"{v.First} - {v.Second};");
+                        }
                     }
                     return resultate;
                 }
             }
         }
+    
 
         #region support_functions
-        private double CalculatingAVGWeeks (List<Pair<DateTime, int>> datesMarks)
+        private double CalculatingAVGMark (List<Pair<DateTime, int>> datesMarks)
         {
             double markAVG = 0;
             foreach (var dateMark in datesMarks)
@@ -364,6 +383,26 @@ namespace Goal_Achievement_Control_Windows_App.Core
             //var endDate = startDate.AddMonths(1).AddDays(-1);
 
             //int weeks = datesMarks.Count / 7;   //na
+        }
+
+        private List<Pair<string, double>> CalculatingAVGMarkMonth(List<Pair<DateTime, int>> datesMarks)
+        {
+            List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();
+            DateTime monthDayFirst = default (DateTime);
+            DateTime monthDayLast = default(DateTime);
+            for (int i = 0; i<datesMarks.Count; ++i)
+            {
+
+            }
+            if(monthDayFirst == default (DateTime))
+            {
+                monthDayFirst = datesMarks[0].First;                
+            }
+            else
+            {
+
+            }
+            monthDayLast = datesMarks[0].First.AddMonths(1).AddDays(-1);
         }
 
         private class Pair<T, V>
