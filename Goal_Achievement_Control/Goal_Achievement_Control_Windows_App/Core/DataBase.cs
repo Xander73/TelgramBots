@@ -385,24 +385,55 @@ namespace Goal_Achievement_Control_Windows_App.Core
             //int weeks = datesMarks.Count / 7;   //na
         }
 
+        private List<Pair<string, double>> CalculatingAVGMarkWeekly(List<Pair<DateTime, int>> datesMarks)
+        {
+            List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();            
+
+            if (datesMarks.Count == 0)
+            {
+                return new List<Pair<string, double>>();
+            }                       
+            
+            for (int i = 0; i < datesMarks.Count; ++i)
+            {
+                if (i % 7 == 0 && i > 0)
+                {
+                    resultateAVGMarks.Add(new Pair<string, double> ($"Week from {datesMarks[i].First} to {datesMarks[i].First.AddDays(-7)}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                }
+                else if ((i + 1) == datesMarks.Count)
+                {
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i].First} to {datesMarks[i].First.AddDays(-7)}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                }
+            }
+            return resultateAVGMarks;
+        }
+
         private List<Pair<string, double>> CalculatingAVGMarkMonth(List<Pair<DateTime, int>> datesMarks)
         {
             List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();
-            DateTime monthDayFirst = default (DateTime);
+            DateTime monthDayFirst = default(DateTime);
             DateTime monthDayLast = default(DateTime);
-            for (int i = 0; i<datesMarks.Count; ++i)
-            {
 
-            }
-            if(monthDayFirst == default (DateTime))
+            if (datesMarks.Count == 0)
             {
-                monthDayFirst = datesMarks[0].First;                
+                return new List<Pair<string, double>>();
             }
-            else
-            {
 
+            monthDayFirst = monthDayFirst == default(DateTime) ? monthDayFirst = datesMarks[0].First : new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            monthDayLast = (DateTime.Now.AddMonths(1).AddDays(-1) < datesMarks[datesMarks.Count - 1].First) ? datesMarks[0].First.AddMonths(1).AddDays(-1) : datesMarks[datesMarks.Count - 1].First;
+
+            for (int i = 0; i < datesMarks.Count; ++i)
+            {
+                if (i % 7 == 0 && i > 0)
+                {
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i].First} to {datesMarks[i].First.AddDays(-7)}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                }
+                else if ((i + 1) == datesMarks.Count)
+                {
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i].First} to {datesMarks[i].First.AddDays(-7)}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                }
             }
-            monthDayLast = datesMarks[0].First.AddMonths(1).AddDays(-1);
+
         }
 
         private class Pair<T, V>
@@ -412,6 +443,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 First = first;
                 Second = second;
             }
+            public Pair() { }
             public T First { get; set; }
             public V Second { get; set; }
         }
