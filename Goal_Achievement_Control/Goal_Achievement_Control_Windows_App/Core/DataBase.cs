@@ -44,13 +44,13 @@ namespace Goal_Achievement_Control_Windows_App.Core
         private string nameDataBase;
         public string NameDataBase { get => nameDataBase; }
 
-        public void AddData (string nameTable, string data)     //формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца), второй столбец, третий, ..."
-        {            
+        public void AddData(string nameTable, string data)     //формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца), второй столбец, третий, ..."
+        {
             using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
-                {                    
+                {
                     cmd.CommandText = $"INSERT INTO {nameTable} VALUES({NextId(nameTable)}, {data})";
                     cmd.ExecuteNonQuery();
                 }
@@ -152,7 +152,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }       //следующий id для ввола строки в базу данных
 
-        public int IdCurrentUser (int telegramId)
+        public int IdCurrentUser(int telegramId)
         {
             using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
             {
@@ -169,7 +169,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             reader.Read();
                             return int.TryParse(reader["id"].ToString(), out int result) ? result : 0;
                         }
-                        return 0;                                                
+                        return 0;
                     }
                 }
             }
@@ -188,7 +188,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public void ChangeOperatingMode (int userId, OperatingMode mode)
+        public void ChangeOperatingMode(int userId, OperatingMode mode)
         {
             using (var connection = new SQLiteConnection($"Data Sourse = {nameDataBase}"))
             {
@@ -248,16 +248,16 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public string DeleteGoal (int userId, int goalIndex)
+        public string DeleteGoal(int userId, int goalIndex)
         {
-            List<string> goals = new List<string>( GetGoals(userId).Values);
+            List<string> goals = new List<string>(GetGoals(userId).Values);
 
-            using (var connection = new SqlConnection ($"Data Source = {nameDataBase}"))
+            using (var connection = new SqlConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[goalIndex-1]}'";
+                    cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[goalIndex - 1]}'";
                     return goals[goalIndex - 1] + " удалена";
                 }
             }
@@ -275,10 +275,10 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    List<int> idGoals = new List<int> (goalsCurentUser.Keys);
+                    List<int> idGoals = new List<int>(goalsCurentUser.Keys);
                     for (int i = 0; i < goalsCurentUser.Count - 1; i++)
                     {
-                        
+
                         string tempResultate = goalsCurentUser[i].ToString() + "\n\n";
                         cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
                             $"JOIN Goals ON Users.id == Goals.userId " +
@@ -339,12 +339,12 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             $"JOIN Goals ON Users.id == Goals.userId " +
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
                             $"WHERE Goals.id == '{idGoals[i]}' " +
-                            $"ORDER BY Goals.id DESC";        
+                            $"ORDER BY Goals.id DESC";
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                dateMarksWeek.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"])); 
+                                dateMarksWeek.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
                                 if (dateMarksWeek.Count % 7 == 0 && dateMarksWeek.Count != 0)
                                 {
                                     AVGMarksWeeks.Add(new Pair<string, double>($"Average weekly score:\nfrom {dateMarksWeek[0].First} to {dateMarksWeek[dateMarksWeek.Count - 1].First}", CalculatingAVGMark(dateMarksWeek)));
@@ -352,7 +352,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                                 }
                                 dateMarksAll.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
 
-                                tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";                                
+                                tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
                             }
                         }
                         resultate += tempResultate + "______________________________________________\n\n";
@@ -366,17 +366,17 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 }
             }
         }
-    
+
 
         #region support_functions
-        private double CalculatingAVGMark (List<Pair<DateTime, int>> datesMarks)
+        private double CalculatingAVGMark(List<Pair<DateTime, int>> datesMarks)
         {
             double markAVG = 0;
             foreach (var dateMark in datesMarks)
             {
                 markAVG += dateMark.Second;
             }
-            return markAVG /= datesMarks.Count; 
+            return markAVG /= datesMarks.Count;
 
             //DateTime now = DateTime.Now;
             //var startDate = new DateTime(now.Year, now.Month, 1);
@@ -387,22 +387,24 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         private List<Pair<string, double>> CalculatingAVGMarkWeekly(List<Pair<DateTime, int>> datesMarks)
         {
-            List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();            
+            List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();
+            int indexLastday = 0;
 
             if (datesMarks.Count == 0)
             {
                 return new List<Pair<string, double>>();
-            }                       
-            
+            }
+
             for (int i = 0; i < datesMarks.Count; ++i)
             {
-                if (i % 7 == 0 && i > 0)
+                if ((i + 1) % 7 == 0 && i > 0)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double> ($"Week from {datesMarks[i].First} to {datesMarks[i].First.AddDays(-7)}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                    indexLastday = i + 1;
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[indexLastday-7].First} to {datesMarks[i].First}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
                 }
                 else if ((i + 1) == datesMarks.Count)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i].First} to {datesMarks[i].First.AddDays(-7)}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i-(i-indexLastday)].First} to {datesMarks[i].First}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
                 }
             }
             return resultateAVGMarks;
@@ -411,34 +413,34 @@ namespace Goal_Achievement_Control_Windows_App.Core
         private List<Pair<string, double>> CalculatingAVGMarkMonth(List<Pair<DateTime, int>> datesMarks)
         {
             List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();
-            DateTime monthDayFirst = default(DateTime);
-            DateTime monthDayLast = default(DateTime);
+            DateTime monthDayFirst =new DateTime(datesMarks[0].First.Year, datesMarks[0].First.Month, 1);
+            int indexFirstDay = 0;
+            DateTime monthDayLast = (datesMarks[0].First.AddMonths(1).AddDays(-1) < datesMarks[datesMarks.Count - 1].First) ? datesMarks[0].First.AddMonths(1).AddDays(-1) : datesMarks[datesMarks.Count - 1].First; ;
 
             if (datesMarks.Count == 0)
             {
                 return new List<Pair<string, double>>();
             }
-
-            monthDayFirst = monthDayFirst == default(DateTime) ? monthDayFirst = datesMarks[0].First : new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            monthDayLast = (DateTime.Now.AddMonths(1).AddDays(-1) < datesMarks[datesMarks.Count - 1].First) ? datesMarks[0].First.AddMonths(1).AddDays(-1) : datesMarks[datesMarks.Count - 1].First;
-
+                        
             for (int i = 0; i < datesMarks.Count; ++i)
             {
-                if (i % 7 == 0 && i > 0)
+                if (monthDayLast < datesMarks[i].First)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i].First} to {datesMarks[i].First.AddDays(-7)}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.Month}: ", CalculatingAVGMark(datesMarks.GetRange(i - monthDayLast.Day, monthDayLast.Day))));
+                    indexFirstDay = i;
+                    monthDayLast = datesMarks[i].First.AddMonths(1).AddDays(-1);
                 }
                 else if ((i + 1) == datesMarks.Count)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i].First} to {datesMarks[i].First.AddDays(-7)}: ", CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.Month}:  ", CalculatingAVGMark(datesMarks.GetRange(i - (i - indexFirstDay), i - indexFirstDay))));
                 }
             }
-
+            return resultateAVGMarks;
         }
 
         private class Pair<T, V>
         {
-            public Pair (T first, V second)
+            public Pair(T first, V second)
             {
                 First = first;
                 Second = second;
@@ -467,7 +469,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     cmd.CommandText = "INSERT INTO TestTable (value) values(:value)";
                     cmd.Parameters.AddWithValue("value", "abc");
                     cmd.ExecuteNonQuery();
-                    
+
 
                     cmd.CommandText = "select * from TestTable";
                     using (var reader = cmd.ExecuteReader())
