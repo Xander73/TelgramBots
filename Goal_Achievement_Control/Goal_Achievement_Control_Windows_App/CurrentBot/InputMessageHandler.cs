@@ -55,7 +55,6 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);    //нет режима работы бота
                 return "Режим редактирования целей закрыт.";
             }
-            //---------
             else if (commandText.ToLower() == "/удалить")
             {
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.DeleteGoal);

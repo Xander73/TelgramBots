@@ -18,6 +18,7 @@ namespace Goal_Achievement_Control.CurrentBot
     class MainBot : BaseBot.BaseBot
     {
         public DataBase dataBase;
+        private const string DATA_BASE_NAME = "Goal_Achievement_Control";
 
         public MainBot()
         {
@@ -26,7 +27,6 @@ namespace Goal_Achievement_Control.CurrentBot
             
         }
 
-        private const string DATA_BASE_NAME = "Goal_Achievement_Control";
 
         public override async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -173,7 +173,7 @@ namespace Goal_Achievement_Control.CurrentBot
             await Task.Run(() => CheckingAssessmenGoalsToday());   //асинхронно запускаем проверку пользователей на ежедневный ввод оценок
         }
 
-        private void CheckingAssessmenGoalsToday()
+        private async void CheckingAssessmenGoalsToday()
         {
             DataBase db = new DataBase(DATA_BASE_NAME);
             DateTime dateLastCheck = DateTime.Today.AddHours(19).AddDays(-1);     //настоящий
@@ -181,10 +181,10 @@ namespace Goal_Achievement_Control.CurrentBot
             {
                 if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
                 {
-                    List<string> usersIdApp = new List<string>(dataBase.Users.Values);
-                    foreach (string v in usersIdApp)
+                    Dictionary <string, string> usersIdApp = new Dictionary<string, string>(dataBase.Users);
+                    foreach (var v in usersIdApp)
                     {
-                        dataBase.MarksLastFourWeeks(Convert.ToInt32(v));
+                        await SendToBotAsync(token, v.Key, dataBase.MarksLastFourWeeks(Convert.ToInt32(v.Value)));
                     }
                 }
                 if (DateTime.Now.Hour >= dateLastCheck.Hour && DateTime.Now.Date > dateLastCheck.Date)      //если текущее время больше времени проверки и сегодняшняя дата больше даты последней проверки
