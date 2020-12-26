@@ -12,11 +12,11 @@ using Goal_Achievement_Control.CurrentBot;
 using System.Data.SQLite;
 using System.Data;
 using System.Security.Principal;
+using Goal_Achievement_Control_Windows_App.Interfaces;
 
-namespace Goal_Achievement_Control_Windows_App.Helpers
+namespace Goal_Achievement_Control_Windows_App.Helpers 
 {
-
-    class User
+    class User : IUser
     {
         public OperatingMode Mode { get; set; }
         private Telegram.Bot.Types.Message message;
@@ -29,15 +29,21 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 message.Text = messageHandler.RateTypeMessage(Message);
             }
         }
-        public InputMessageHandler messageHandler;
-
+        private Dictionary<int, string> goals;
         private DataBase dataBase;
         public DataBase DataBase
         {
             get => dataBase;
         }
+        private int id; //ID в базе данных приложения
+        public int ID
+        {
+            get => id;
+            set => id = value;
+        }
+        public InputMessageHandler messageHandler;
 
-        public User()  {}
+
 
         public User(DataBase db, int idCurrentUser, Telegram.Bot.Types.Message mes, OperatingMode mode = OperatingMode.NON)
         {
@@ -48,85 +54,14 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             goals = dataBase.GetGoals(ID);
         }
 
-        private Dictionary<int, string> goals;
-
-        public Dictionary<int, string> Goals
+        public string GoalsToString ()
         {
-            get => goals;
-            set => goals = value;
-        }
-        public string GoalsToString
-        {
-            get
-            {
                 string temp = null;
                 foreach (var v in goals)    //DataBase.GetGoals(ID) возвращает Dictionary<int, string>, для вывода целей 
                 {
                     temp += v.Value + '\n';     //выведем значения и объединим их в одну строку
                 }
-                return temp;    
-            }                                                          
-        }
-
-        public Goal Goal
-        {
-            //private get
-            //{
-            //    for (int i = 0; i < goals.Count; ++i)
-            //    {
-            //        Console.WriteLine($"{i+1}: {goals[i].Name};");
-            //    }
-            //    Console.WriteLine("Enter the target or the index");
-
-            //    string searchingTarget = Console.ReadLine().ToLower();
-            //    if (int.TryParse(searchingTarget, out int targetindex))
-            //    {
-            //        if (targetindex - 1 >= 0 && targetindex - 1 < goals.Count)
-            //        {
-            //            return goals[targetindex];
-            //        }
-            //        else
-            //        {
-            //            Console.WriteLine("Index is wrong");
-            //            return null;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        foreach (var v in goals)
-            //        {
-            //            if (v.Name == searchingTarget)
-            //            {
-            //                return v;
-            //            }
-            //            else
-            //            {
-            //                Console.WriteLine("The target not found.");
-            //            }
-            //        }
-            //    }
-
-            //    Console.WriteLine("The name is not finde");
-            //    return null;    //if not index and not finde a Name of target
-            //}
-            set
-            {
-                //if (goals.Count < 15)
-                //{
-                //    goals.Add(value);
-                //}
-                //else
-                //{
-                //    Console.WriteLine("To much goals");
-                //}
-            }
-        }
-                
-        private int id; //ID в базе данных приложения
-        public int ID
-        {
-            get => id;
-            set => id = value;
+                return temp;                                                       
         }
 
         public string AddGoal (string goal)
