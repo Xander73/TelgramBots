@@ -42,7 +42,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             {
                 if (user.CountGoals() < 15)
                 {
-                    user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddGoal);
+                    user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddGoal);      //в следующем сообщении программа ожидает цель
                     return "Режим редактирования целей открыт.";
                 }    
                 else
@@ -52,7 +52,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             }
             else if (commandText.ToLower () == "/остановить ввод целей")
             {
-                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);    //нет режима работы бота
+                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);    //OperatingMode.NON - нет режима работы бота
                 return "Режим редактирования целей закрыт.";
             }
             else if (commandText.ToLower() == "/удалить")
@@ -67,7 +67,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             else if (commandText.ToLower() == "/ввести оценки")
             {
                 user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddMark);
-                return $"Режим ввода оценок открыт.\n{user.GoalsToString()}\nВведите через запятую оценки каждой цели по порядку. Оценки должны быть от 0 до 10";
+                return $"Режим ввода оценок открыт.\n{user.GoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10";
             }
             else if (commandText.ToLower() == "/статистика за 4 недели")
             {

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data.SQLite;
 using System.IO;
-using System.Data.Common;
 using Goal_Achievement_Control.CurrentBot;
-using System.Security.Cryptography;
 using System.Data.SqlClient;
-using Goal_Achievement_Control_Windows_App.Helpers;
 
 namespace Goal_Achievement_Control_Windows_App.Core
 {
     class DataBase
     {
+        private string nameDataBase;
+        public string NameDataBase { get => nameDataBase; }
+
+
+
         public DataBase(string nameDataBase)
         {
             this.nameDataBase = nameDataBase + ".db";
@@ -39,10 +40,8 @@ namespace Goal_Achievement_Control_Windows_App.Core
                   [goal_id] integer not null"
                     );
         }
+               
 
-
-        private string nameDataBase;
-        public string NameDataBase { get => nameDataBase; }
 
         public void AddData(string nameTable, string data)     //формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца), второй столбец, третий, ..."
         {
@@ -201,10 +200,8 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public Dictionary<string, string> Users
+        public Dictionary<string, string> TelegramIdUsers ()
         {
-            get
-            {
                 using (var Connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
                 {
                     Connection.Open();
@@ -222,7 +219,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                         }
                     }
                 }
-            }
+            
         }
 
         public Dictionary<int, string> GetGoals(int userId)
@@ -438,17 +435,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             return resultateAVGMarks;
         }
 
-        private class Pair<T, V>
-        {
-            public Pair(T first, V second)
-            {
-                First = first;
-                Second = second;
-            }
-            public Pair() { }
-            public T First { get; set; }
-            public V Second { get; set; }
-        }
+        
         #endregion
 
         void temp()

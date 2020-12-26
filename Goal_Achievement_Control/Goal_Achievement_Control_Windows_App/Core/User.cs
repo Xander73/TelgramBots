@@ -53,6 +53,8 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
             goals = dataBase.GetGoals(ID);
         }
 
+
+
         public string GoalsToString ()
         {
                 string temp = null;
@@ -94,16 +96,13 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         {
             string [] marks = text.Replace(" ", "").Split(',');
 
-            //List<int> goals = new List<int>(dataBase.GetGoals(ID).Keys);
+            List<int> goals = new List<int>(dataBase.GetGoals(ID).Keys);
 
-           // if (marks.Length != goals.Count)
+            if (marks.Length != goals.Count)
             {
                 return "Разное количество оценок и целей. Повторите ввод оценок";
             }
-
-#pragma warning disable CS0162 // Обнаружен недостижимый код
             foreach (var v in marks)
-#pragma warning restore CS0162 // Обнаружен недостижимый код
             {
                 if (!int.TryParse(v, out int res))
                 {
@@ -115,7 +114,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 }
             }
 
-            //dataBase.AddMarks(ID, marks, goals);
+            dataBase.AddMarks(ID, marks, goals);
             dataBase.ChangeOperatingMode(ID, OperatingMode.NON);
             return "Оценки добавлены";
         }
