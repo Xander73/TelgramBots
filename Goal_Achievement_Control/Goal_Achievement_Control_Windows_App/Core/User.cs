@@ -2,7 +2,6 @@
  * Класс содержит список целей, ID клиента, последнее сообщение и обработчик сообщений.
  * */
 
-using Goal_Achievement_Control.Helpers;
 using System;
 using System.Collections.Generic;
 using Goal_Achievement_Control_Windows_App.CurrentBot;
