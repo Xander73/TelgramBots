@@ -18,9 +18,7 @@ namespace Goal_Achievement_Control_Windows_App.Interfaces
 
         int NextId(string nameTable);
 
-        int IdCurrentUser(int telegramId);
-
-        void AddTable(string nameTable, string columns);
+        int IdCurrentUser(int telegramId);              
 
         void ChangeOperatingMode(int userId, OperatingMode mode);
 
@@ -33,12 +31,5 @@ namespace Goal_Achievement_Control_Windows_App.Interfaces
         string MarksLastFourWeeks(int userId);
 
         string MarksAll(int userId);
-
-        double CalculatingAVGMark(List<Pair<DateTime, int>> datesMarks);
-
-        List<Pair<string, double>> CalculatingAVGMarkWeekly(List<Pair<DateTime, int>> datesMarks);
-
-        List<Pair<string, double>> CalculatingAVGMarkMonthly(List<Pair<DateTime, int>> datesMarks);
-
     }
 }
