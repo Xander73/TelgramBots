@@ -49,12 +49,12 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public void AddData(string nameTable, string data)     //формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца) - второй столбец, третий, ..."
         {
-            using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"INSERT INTO {nameTable} VALUES({NextId(nameTable)}, {data})";
+                    cmd.CommandText = $"INSERT INTO {nameTable} VALUES({NextId(nameTable)}, '{data}')";
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -62,7 +62,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public void AddUser(string telegramId, string cahtId, OperatingMode mode)
         {
-            using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -75,7 +75,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public void AddGoal(string goal, int userId)
         {
-            using (var connection = new SQLiteConnection($"Data Source=MyDB.db"))
+            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -88,7 +88,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public void AddMarks(int userId, string[] marks, List<int> goalsId)
         {
-            using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -104,7 +104,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public OperatingMode GetUserMod(int id)
         {
-            using (var connection = new SQLiteConnection($"Data Sourse = {nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Sourse = {NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -138,7 +138,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public int NextId(string nameTable)
         {
-            using (var connection = new SQLiteConnection($"Data Source=MyDB.db"))
+            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -157,7 +157,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public int IdCurrentUser(int telegramId)
         {
-            using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -178,14 +178,14 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public void AddTable(string nameTable, string columns)
+        public void AddTable(string nameTable, string columnsWithAttributes)
         {
-            using (var connection = new SQLiteConnection($"Data Source={nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $@"CREATE TABLE IF NOT EXISTS [{nameTable}]({columns});";
+                    cmd.CommandText = $@"CREATE TABLE IF NOT EXISTS [{nameTable}]({columnsWithAttributes});";
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -193,7 +193,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public void ChangeOperatingMode(int userId, OperatingMode mode)
         {
-            using (var connection = new SQLiteConnection($"Data Sourse = {nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Sourse = {NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -228,7 +228,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public Dictionary<int, string> GetGoals(int userId)
         {
-            using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -328,7 +328,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             List<Pair<string, double>> AVGMarksMonths = new List<Pair<string, double>>();
             string resultate = null;
 
-            using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
@@ -345,16 +345,8 @@ namespace Goal_Achievement_Control_Windows_App.Core
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
-                            {
-                                //dateMarksWeek.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
-                                //if (dateMarksWeek.Count % 7 == 0 && dateMarksWeek.Count != 0)
-                                //{
-                                //    AVGMarksWeeks.Add(new Pair<string, double>($"Average weekly score:\nfrom {dateMarksWeek[0].First} to {dateMarksWeek[dateMarksWeek.Count - 1].First}", CalculatingAVGMark(dateMarksWeek)));
-                                //    dateMarksWeek.Clear();
-                                //}
+                            {                                
                                 dateMarksAll.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
-
-                                //tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";
                             }
                         }
                         resultate += tempResultate + CalculatingAVGMarkWeekly(dateMarksAll) +
@@ -376,12 +368,6 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 markAVG += dateMark.Second;
             }
             return markAVG /= datesMarks.Count;
-
-            //DateTime now = DateTime.Now;
-            //var startDate = new DateTime(now.Year, now.Month, 1);
-            //var endDate = startDate.AddMonths(1).AddDays(-1);
-
-            //int weeks = datesMarks.Count / 7;   //na
         }
 
         private List<Pair<string, double>> CalculatingAVGMarkWeekly(List<Pair<DateTime, int>> datesMarks)

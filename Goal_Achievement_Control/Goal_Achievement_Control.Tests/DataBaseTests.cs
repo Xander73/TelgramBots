@@ -10,12 +10,14 @@ namespace Goal_Achievement_Control.Tests
     [TestClass]
     public class DataBaseTests
     {
+        private DataBase db = new DataBase("TestDB");
+        
         [TestMethod]
-        public void AddTable_nameTableAndColumsName_TestTableRreterned()
-        {
-            DataBase db = new DataBase("TestDB");
+        public void AddTable_TestTable_TestTableRreterned()
+        {            
             string nameTable = "TestTable";
-            string arguments = "ID, Name";
+            string arguments = @"[ID] integer not null primary key autoincrement,
+                                 [Name] nvarchar(50) not null";
             string expected = "TestTable";
             string actual = "";
 
@@ -32,14 +34,64 @@ namespace Goal_Achievement_Control.Tests
                         {
                             actual = read["name"].ToString();
                             if (read["name"].ToString().Equals(expected))
-                            actual = read["name"].ToString();
+                                actual = read["name"].ToString();
                         }
-                    }
-                    //cmd.CommandText = "drop table testTable";
-                    //cmd.ExecuteNonQuery();
+                    }                    
                 }
             }
+            Delete_TestTable(nameTable);
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void AddData_1AndAlex_1AlexRetyrned ()
+        {
+            string nameTable = "TableForTests";
+            string columns = @"[ID] integer not null primary key autoincrement, 
+                               [Name] nvarchar (50) not null";
+            string data = "Alex";
+            string expected = "1Alex";
+            string actual = "";
+
+            db.AddTable(nameTable, columns);
+
+            db.AddData(nameTable, data);
+
+            using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
+            {
+                connected.Open();
+                using (var cmd = connected.CreateCommand())
+                {
+                    cmd.CommandText = $"SELECT ID, Name FROM {nameTable}";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            actual += reader["ID"].ToString() + reader["Name"].ToString();
+                        }
+                    }
+                    cmd.CommandText = $"DELETE FROM {nameTable}";
+                }
+            }
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        public void Delete_TestTable (string nameTable)
+        {
+            using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
+            {
+                connected.Open();
+                using (var cmd = connected.CreateCommand())
+                {
+                    cmd.CommandText = $"DROP TABLE {nameTable}";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        
+
+        
+
     }
 }
