@@ -44,17 +44,22 @@ namespace Goal_Achievement_Control_Windows_App.Core
                         );
             }
         }
-               
 
-
-        public void AddData(string nameTable, string data)     //формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца) - второй столбец, третий, ..."
+        /// <summary>
+        /// формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца) 
+        ///второй столбец, третий, ..."
+        ///текстовые стрки пишем с одной кавычкой - 'текст'
+        /// </summary>
+        /// <param name="nameTable"></param>
+        /// <param name="data"></param>
+        public void AddData(string nameTable, string data)     
         {
             using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"INSERT INTO {nameTable} VALUES({NextId(nameTable)}, '{data}')";
+                    cmd.CommandText = $"INSERT INTO {nameTable} VALUES({NextId(nameTable)}, {data})";
                     cmd.ExecuteNonQuery();
                 }
             }
