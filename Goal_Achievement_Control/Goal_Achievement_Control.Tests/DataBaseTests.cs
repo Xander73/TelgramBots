@@ -94,11 +94,9 @@ namespace Goal_Achievement_Control.Tests
                             actual += reader["ID"].ToString() + reader["Name"].ToString();
                         }
                     }
-                    cmd.CommandText = $"DELETE FROM {nameTable}";
-                    cmd.ExecuteNonQuery();
                 }
             }
-
+            DeleteTable(nameTable);
             Assert.AreEqual(expected, actual);
         }
 
@@ -126,10 +124,9 @@ namespace Goal_Achievement_Control.Tests
                             actual += reader["operatingMode"];
                         }                        
                     }
-                    cmd.CommandText = "DELETE FROM Users";
-                    cmd.ExecuteNonQuery();
                 }
             }
+            DeleteTable("Users");
             Assert.AreEqual(expected, actual);
         }
 
@@ -156,10 +153,9 @@ namespace Goal_Achievement_Control.Tests
                             actual += reader["id"].ToString() + reader["Goal"] + reader["userId"] + reader["isMarked"].ToString();
                         }
                     }
-                    cmd.CommandText = "DELETE FROM Goals";
-                    cmd.ExecuteNonQuery();
                 }
             }
+            DeleteTable("Goals");
             Assert.AreEqual(expected, actual); ;
         }
 
@@ -187,10 +183,9 @@ namespace Goal_Achievement_Control.Tests
                             actual += reader["id"].ToString() + reader["Date"] + reader["mark"] + reader["goal_id"]; 
                         }
                     }
-                    cmd.CommandText = "DELETE FROM Marks";
-                    cmd.ExecuteNonQuery();
                 }
             }
+            DeleteTable("Marks");
             Assert.AreEqual(expected, actual);
         }
 
@@ -206,9 +201,18 @@ namespace Goal_Achievement_Control.Tests
                 }
             }
         }
-        
 
-        
-
+        public void DeleteTable (string nameTable)
+        {
+            using (var connacted = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
+            {
+                connacted.Open();
+                using (var cmd = connacted.CreateCommand())
+                {
+                    cmd.CommandText = $"DELETE FROM {nameTable}";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
