@@ -11,7 +11,7 @@ namespace Goal_Achievement_Control.Tests
         private DataBase db = new DataBase("TestDB");
         
         [TestMethod]
-        public void AddTable_TestTable_TestTableRreterned()
+        public void AddTable_TestTable_TestTableRreturned()
         {
             db.AddTable("Users",
                                 @"[id] integer not null primary key autoincrement,
@@ -66,7 +66,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void AddData_1AndAlex_1AlexRetyrned ()
+        public void AddData_1AndAlex_1AlexReturned ()
         {
             string nameTable = "TableForTests";
             string columns = @"[ID] integer not null primary key autoincrement, 
@@ -101,7 +101,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void AddUser_1And1And1AndNON_111NONRetyrned()
+        public void AddUser_1And1And1AndNON_111NONReturned()
         {
             string expected = "111NON";
             string actual = "";
@@ -129,6 +129,36 @@ namespace Goal_Achievement_Control.Tests
                 }
             }
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void AddGoal_TestGoalAnd1_TestGoal1Returned ()
+        {
+            string expected = "1TestGoal1False";
+            string actual = "";
+            string testGoal = "TestGoal";
+            int userId = 1;
+
+            db.AddGoal(testGoal, userId);
+
+            using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
+            {
+                connected.Open();
+                using (var cmd = connected.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT id, Goal, userId, isMarked FROM Goals";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            actual += reader["id"].ToString() + reader["Goal"] + reader["userId"] + reader["isMarked"].ToString();
+                        }
+                    }
+                    cmd.CommandText = "DELETE FROM Goals";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            Assert.AreEqual(expected, actual); ;
         }
 
         public void Delete_TestTable (string nameTable)
