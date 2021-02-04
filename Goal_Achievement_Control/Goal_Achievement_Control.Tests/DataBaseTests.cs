@@ -2,6 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Goal_Achievement_Control_Windows_App.Core;
 using Goal_Achievement_Control.CurrentBot;
 using System.Data.SQLite;
+using System;
+using System.Collections.Generic;
 
 namespace Goal_Achievement_Control.Tests
 {
@@ -58,7 +60,7 @@ namespace Goal_Achievement_Control.Tests
                     }                    
                 }
             }
-            Delete_TestTable(nameTable);
+            Drop_TestTable(nameTable);
             //Delete_TestTable("Users");
             //Delete_TestTable("Goals");
             //Delete_TestTable("Marks");
@@ -161,7 +163,38 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(expected, actual); ;
         }
 
-        public void Delete_TestTable (string nameTable)
+        [TestMethod]
+        public void AddMarks_1AndCurrendDateAnd5And1_1currentDate51Returned ()
+        {
+            string expected = "1" + DateTime.Now.ToShortDateString() + "51";
+            string actual = "";
+            int idUser = 1;
+            string[] marks = { "5" };
+            List<int> goalsId = new List<int>() { 1 };
+
+            db.AddMarks(idUser, marks, goalsId);
+
+            using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
+            {
+                connected.Open();
+                using (var cmd = connected.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT id, Date, mark, goal_id FROM Marks";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            actual += reader["id"].ToString() + reader["Date"] + reader["mark"] + reader["goal_id"]; 
+                        }
+                    }
+                    cmd.CommandText = "DELETE FROM Marks";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            Assert.AreEqual(expected, actual);
+        }
+
+        public void Drop_TestTable (string nameTable)
         {
             using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
             {

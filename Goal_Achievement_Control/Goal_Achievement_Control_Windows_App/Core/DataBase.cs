@@ -100,7 +100,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 {
                     for (int i = 0; i < goalsId.Count; ++i)
                     {
-                        cmd.CommandText = $@"INSERT INTO Marks VALUES ({NextId("Marks")}, '{DateTime.Now.Date.ToString()}', '{marks[i]}', {goalsId[i]})";
+                        cmd.CommandText = $@"INSERT INTO Marks VALUES ({NextId("Marks")}, '{DateTime.Now.Date.ToShortDateString()}', '{marks[i]}', {goalsId[i]})";
                         cmd.ExecuteNonQuery();
                     }
                 }
