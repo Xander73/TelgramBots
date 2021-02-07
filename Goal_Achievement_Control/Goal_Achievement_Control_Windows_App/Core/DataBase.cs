@@ -109,7 +109,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public OperatingMode GetUserMod(int id)
         {
-            using (var connection = new SQLiteConnection($"Data Sourse = {NameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())

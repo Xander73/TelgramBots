@@ -189,6 +189,19 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod]
+        public void GetUserMod_NON_NONReturned ()
+        {
+            OperatingMode execute = OperatingMode.NON;
+            OperatingMode actual = default;
+            db.AddUser("1", "1", OperatingMode.NON);
+            
+            actual = db.GetUserMod(1);
+            DeleteTable("Users");
+
+            Assert.AreEqual(execute, actual);
+        }
+
         public void Drop_TestTable (string nameTable)
         {
             using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
