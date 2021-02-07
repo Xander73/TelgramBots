@@ -202,6 +202,36 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(execute, actual);
         }
 
+        /// <summary>
+        /// NextId(int Id) имеет условный оператор при возвращении значений:
+        /// 1. пустая таблица - возвращает 1;
+        /// 2. таблица заполнена - возвращает значение на 1 больше максимального Id
+        /// </summary>
+        [TestMethod]
+        public void NextId_EmptyTable_1Returned ()
+        {
+            int execute = 1;
+            int actual = 0;
+
+            actual = db.NextId("Users");
+
+            DeleteTable("Users");
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void NextId_NonEmptyTable_2Returned()
+        {
+            int execute = 2;
+            int actual = 0;
+            db.AddUser("1", "1", OperatingMode.NON);
+
+            actual = db.NextId("Users");
+
+            DeleteTable("Users");
+            Assert.AreEqual(execute, actual);
+        }
+
         public void Drop_TestTable (string nameTable)
         {
             using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))

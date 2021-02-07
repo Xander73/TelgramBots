@@ -365,6 +365,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
 
         #region support_functions
+
         private double CalculatingAVGMark(List<Pair<DateTime, int>> datesMarks)
         {
             double markAVG = 0;
@@ -429,7 +430,6 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
             return resultateAVGMarks;
         }
-
         
         #endregion
 
