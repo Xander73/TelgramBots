@@ -11,7 +11,7 @@ namespace Goal_Achievement_Control.Tests
     public class DataBaseTests
     {
         private DataBase db = new DataBase("TestDB");
-        
+
         [TestMethod]
         public void AddTable_TestTable_TestTableRreturned()
         {
@@ -57,7 +57,7 @@ namespace Goal_Achievement_Control.Tests
                             if (read["name"].ToString().Equals(expected))
                                 actual = read["name"].ToString();
                         }
-                    }                    
+                    }
                 }
             }
             Drop_TestTable(nameTable);
@@ -68,7 +68,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void AddData_1AndAlex_1AlexReturned ()
+        public void AddData_1AndAlex_1AlexReturned()
         {
             string nameTable = "TableForTests";
             string columns = @"[ID] integer not null primary key autoincrement, 
@@ -108,7 +108,7 @@ namespace Goal_Achievement_Control.Tests
 
             db.AddUser("1", "1", OperatingMode.NON);
 
-            using (var connected = new SQLiteConnection ($"Data Source = {db.NameDataBase}"))
+            using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
             {
                 connected.Open();
                 using (var cmd = connected.CreateCommand())
@@ -122,7 +122,7 @@ namespace Goal_Achievement_Control.Tests
                             actual += reader["telegramId"];
                             actual += reader["chatId"];
                             actual += reader["operatingMode"];
-                        }                        
+                        }
                     }
                 }
             }
@@ -131,7 +131,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void AddGoal_TestGoalAnd1_TestGoal1Returned ()
+        public void AddGoal_TestGoalAnd1_TestGoal1Returned()
         {
             string expected = "1TestGoal1False";
             string actual = "";
@@ -160,7 +160,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void AddMarks_1AndCurrendDateAnd5And1_1currentDate51Returned ()
+        public void AddMarks_1AndCurrendDateAnd5And1_1currentDate51Returned()
         {
             string expected = "1" + DateTime.Now.ToShortDateString() + "51";
             string actual = "";
@@ -180,7 +180,7 @@ namespace Goal_Achievement_Control.Tests
                     {
                         while (reader.Read())
                         {
-                            actual += reader["id"].ToString() + reader["Date"] + reader["mark"] + reader["goal_id"]; 
+                            actual += reader["id"].ToString() + reader["Date"] + reader["mark"] + reader["goal_id"];
                         }
                     }
                 }
@@ -190,12 +190,12 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void GetUserMod_NON_NONReturned ()
+        public void GetUserMod_NON_NONReturned()
         {
             OperatingMode execute = OperatingMode.NON;
             OperatingMode actual = default;
             db.AddUser("1", "1", OperatingMode.NON);
-            
+
             actual = db.GetUserMod(1);
             DeleteTable("Users");
 
@@ -208,7 +208,7 @@ namespace Goal_Achievement_Control.Tests
         /// 2. таблица заполнена - возвращает значение на 1 больше максимального Id
         /// </summary>
         [TestMethod]
-        public void NextId_EmptyTable_1Returned ()
+        public void NextId_EmptyTable_1Returned()
         {
             int execute = 1;
             int actual = 0;
@@ -232,7 +232,36 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(execute, actual);
         }
 
-        public void Drop_TestTable (string nameTable)
+        /// <summary>
+        /// IdCurrentUser(int telegramId) имеет условный оператор при возвращении значений:
+        /// 1. нет совпадений - возвращает 0;
+        /// 2. есть совпадения - возвращает значение текущего id в базе данных приложения
+        /// </summary>
+        [TestMethod]
+        public void IdCurrentUser_10_0Returned()
+        {
+            int execute = 0;
+            int actual = -1;
+
+            actual = db.IdCurrentUser(10);
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void IdCurrentUser_1_1Returned()
+        {
+            int execute = 0;
+            int actual = -1;
+            db.AddUser("1", "1", OperatingMode.NON);
+
+            actual = db.IdCurrentUser(10);
+
+            DeleteTable("Users");
+            Assert.AreEqual(execute, actual);
+        }
+
+        public void Drop_TestTable(string nameTable)
         {
             using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
             {
@@ -245,7 +274,7 @@ namespace Goal_Achievement_Control.Tests
             }
         }
 
-        public void DeleteTable (string nameTable)
+        public void DeleteTable(string nameTable)
         {
             using (var connacted = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
             {

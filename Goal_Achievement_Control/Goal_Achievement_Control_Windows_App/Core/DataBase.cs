@@ -168,7 +168,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 using (var cmd = connection.CreateCommand())
                 {
 
-                    //определение текущего ID                    
+                    //определение id в базе данных
                     cmd.CommandText = $"SELECT id FROM Users WHERE telegramId == '{telegramId.ToString()}'";
                     using (var reader = cmd.ExecuteReader())
                     {
