@@ -96,7 +96,7 @@ namespace Goal_Achievement_Control.Tests
                     }
                 }
             }
-            DeleteTable(nameTable);
+            ClearTable(nameTable);
             Assert.AreEqual(expected, actual);
         }
 
@@ -126,7 +126,7 @@ namespace Goal_Achievement_Control.Tests
                     }
                 }
             }
-            DeleteTable("Users");
+            ClearTable("Users");
             Assert.AreEqual(expected, actual);
         }
 
@@ -155,7 +155,7 @@ namespace Goal_Achievement_Control.Tests
                     }
                 }
             }
-            DeleteTable("Goals");
+            ClearTable("Goals");
             Assert.AreEqual(expected, actual); ;
         }
 
@@ -185,7 +185,7 @@ namespace Goal_Achievement_Control.Tests
                     }
                 }
             }
-            DeleteTable("Marks");
+            ClearTable("Marks");
             Assert.AreEqual(expected, actual);
         }
 
@@ -197,7 +197,7 @@ namespace Goal_Achievement_Control.Tests
             db.AddUser("1", "1", OperatingMode.NON);
 
             actual = db.GetUserMod(1);
-            DeleteTable("Users");
+            ClearTable("Users");
 
             Assert.AreEqual(execute, actual);
         }
@@ -215,7 +215,7 @@ namespace Goal_Achievement_Control.Tests
 
             actual = db.NextId("Users");
 
-            DeleteTable("Users");
+            ClearTable("Users");
             Assert.AreEqual(execute, actual);
         }
 
@@ -228,7 +228,7 @@ namespace Goal_Achievement_Control.Tests
 
             actual = db.NextId("Users");
 
-            DeleteTable("Users");
+            ClearTable("Users");
             Assert.AreEqual(execute, actual);
         }
 
@@ -257,7 +257,21 @@ namespace Goal_Achievement_Control.Tests
 
             actual = db.IdCurrentUser(10);
 
-            DeleteTable("Users");
+            ClearTable("Users");
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void ChangeOperatingMode_Error_ErrorReturned()
+        {
+            OperatingMode execute = OperatingMode.Error;
+            OperatingMode actual = default;
+            db.AddUser("1", "1", OperatingMode.NON);
+
+            db.ChangeOperatingMode(1, OperatingMode.Error);
+            actual = db.GetUserMod(1);
+            ClearTable("Users");
+
             Assert.AreEqual(execute, actual);
         }
 
@@ -274,7 +288,7 @@ namespace Goal_Achievement_Control.Tests
             }
         }
 
-        public void DeleteTable(string nameTable)
+        public void ClearTable(string nameTable)
         {
             using (var connacted = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
             {

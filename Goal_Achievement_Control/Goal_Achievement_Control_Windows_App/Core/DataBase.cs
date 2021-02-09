@@ -45,6 +45,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
+
         /// <summary>
         /// формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца) 
         ///второй столбец, третий, ..."
@@ -198,7 +199,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public void ChangeOperatingMode(int userId, OperatingMode mode)
         {
-            using (var connection = new SQLiteConnection($"Data Sourse = {NameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
