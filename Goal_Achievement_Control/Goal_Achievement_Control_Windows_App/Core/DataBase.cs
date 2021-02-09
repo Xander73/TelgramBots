@@ -210,7 +210,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
-        public Dictionary<string, string> TelegramIdUsers ()
+        public Dictionary<string, string> GetTelegramIdUsers ()
         {
                 using (var Connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
                 {

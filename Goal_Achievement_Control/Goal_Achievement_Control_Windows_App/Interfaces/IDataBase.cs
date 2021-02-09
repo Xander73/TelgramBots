@@ -22,7 +22,7 @@ namespace Goal_Achievement_Control_Windows_App.Interfaces
 
         void ChangeOperatingMode(int userId, OperatingMode mode);
 
-        Dictionary<string, string> TelegramIdUsers();
+        Dictionary<string, string> GetTelegramIdUsers();
 
         Dictionary<int, string> GetGoals(int userId);
 

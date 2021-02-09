@@ -275,6 +275,28 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(execute, actual);
         }
 
+        [TestMethod]
+        public void GetTelegramIdUsers_1and2_21Returned()
+        {
+            string execute = "21";
+            string actual = null;
+            db.AddUser("2", "1", OperatingMode.NON);
+            string[] tempKeyValue = new string [2];
+            try
+            {
+                var temp = db.GetTelegramIdUsers();
+                temp.Keys.CopyTo(tempKeyValue, 0);
+                temp.Values.CopyTo(tempKeyValue, 1);
+                actual = tempKeyValue[0] + tempKeyValue[1];
+            }
+
+            finally
+            {
+                ClearTable("Users");
+                Assert.AreEqual(execute, actual);
+            }            
+        }
+
         public void Drop_TestTable(string nameTable)
         {
             using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))

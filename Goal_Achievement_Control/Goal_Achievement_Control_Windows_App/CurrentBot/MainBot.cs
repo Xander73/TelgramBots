@@ -181,7 +181,7 @@ namespace Goal_Achievement_Control.CurrentBot
             {
                 if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
                 {
-                    Dictionary <string, string> usersIdApp = new Dictionary<string, string>(dataBase.TelegramIdUsers());
+                    Dictionary <string, string> usersIdApp = new Dictionary<string, string>(dataBase.GetTelegramIdUsers());
                     foreach (var v in usersIdApp)
                     {
                         await SendToBotAsync(token, v.Key, dataBase.MarksLastFourWeeks(Convert.ToInt32(v.Value)));
@@ -195,7 +195,7 @@ namespace Goal_Achievement_Control.CurrentBot
                             Connection.Open();
                             using (var cmd = Connection.CreateCommand())
                             {
-                                Dictionary<string, string> telegramIdUsers = dataBase.TelegramIdUsers();                                
+                                Dictionary<string, string> telegramIdUsers = dataBase.GetTelegramIdUsers();                                
 
                                 if (telegramIdUsers.Count != (0))
                                 {
