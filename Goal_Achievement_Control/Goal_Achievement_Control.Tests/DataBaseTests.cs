@@ -297,6 +297,34 @@ namespace Goal_Achievement_Control.Tests
             }            
         }
 
+        /// <summary>
+        /// method return string - "11. TestGoal\n"
+        /// </summary>
+        [TestMethod]
+        public void GetGoals_1_11TestGoalReturned()
+        {
+            string execute = "11. TestGoal\n";
+            string actual = "";
+            try
+            {
+                db.AddGoal("TestGoal", 1);
+
+                var temp = db.GetGoals(1);
+                string[] results = new string[temp.Count * 2];
+                foreach (var v in temp)
+                {
+                    actual += v.Key.ToString() + v.Value;
+                }
+            }
+            
+            finally
+            {
+                ClearTable("Goals");
+            }
+            
+            Assert.AreEqual(execute, actual);
+        }
+
         public void Drop_TestTable(string nameTable)
         {
             using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
