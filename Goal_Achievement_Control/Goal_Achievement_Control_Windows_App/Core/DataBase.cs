@@ -284,7 +284,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 using (var cmd = connection.CreateCommand())
                 {
                     List<int> idGoals = new List<int>(goalsCurentUser.Keys);
-                    for (int i = 0; i < goalsCurentUser.Count - 1; i++)
+                    for (int i = 0; i < idGoals.Count; i++)
                     {
 
                         string tempResultate = goalsCurentUser[idGoals[i]].ToString() + "\n\n";
@@ -311,7 +311,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
                         if (AVGMarks.Count == 0)
                         {
-                            resultate += "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет.";
+                            return "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет.";
                         }
                         else
                         {

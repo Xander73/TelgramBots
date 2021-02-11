@@ -368,6 +368,34 @@ namespace Goal_Achievement_Control.Tests
             }
             Assert.AreEqual(execute, actual);
         }
+        /// <summary>
+        /// Тест с нулем совпадений
+        /// </summary>
+        [TestMethod]
+        public void MarksLastFourWeeks_______()
+        {
+            string execute = "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет.";
+            string actual = "";
+
+            try
+            {
+                //db.AddUser("1", "1", OperatingMode.NON);
+                db.AddGoal("TestGoal", 1);
+                //db.AddMarks(1, new string [] { "1" }, new List<int>(1));
+
+                actual = db.MarksLastFourWeeks(1);
+            }
+
+            finally
+            {
+                ClearTable("Users");
+                ClearTable("Goals");
+                ClearTable("Marks");
+            }
+
+
+            Assert.AreEqual(execute, actual);
+        }
 
         public void Drop_TestTable(string nameTable)
         {
