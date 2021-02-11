@@ -247,7 +247,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     {
                         for (int i = 1; reader.Read(); ++i)
                         {
-                            resultate.Add(Convert.ToInt32(reader["id"]), $"{i}. {reader["Goal"]}\n");
+                            resultate.Add(Convert.ToInt32(reader["id"]), reader["Goal"].ToString());
                         }
                         return resultate;
                     }
