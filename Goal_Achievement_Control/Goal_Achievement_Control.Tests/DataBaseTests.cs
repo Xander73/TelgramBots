@@ -325,6 +325,50 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(execute, actual);
         }
 
+        [TestMethod]
+        public void DeleteGoal_TestGoalAnd1_0Returned()
+        {
+            int execute = 0;
+            int actual = -1;
+
+            try
+            {
+                db.AddGoal("TestGoal", 1);
+                //db.AddGoal("TestGoal", 1);
+                string s = db.DeleteGoal(1, 1);
+
+                using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}")) 
+                {
+                    connected.Open();
+                    using (var cmd = connected.CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT COUNT(*) FROM Goals";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                actual = Convert.ToInt32(reader[0]);
+                            }
+                        }
+                        cmd.CommandText = "SELECT id, Goal, userId, isMarked FROM Goals";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            string temp = "";
+                            while (reader.Read())
+                            {
+                                temp = reader[0].ToString() + reader[1].ToString() + reader[2].ToString() + reader[3].ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                ClearTable("Goals");
+            }
+            Assert.AreEqual(execute, actual);
+        }
+
         public void Drop_TestTable(string nameTable)
         {
             using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))

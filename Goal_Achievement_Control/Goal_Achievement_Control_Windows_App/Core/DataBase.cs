@@ -259,12 +259,13 @@ namespace Goal_Achievement_Control_Windows_App.Core
         {
             List<string> goals = new List<string>(GetGoals(userId).Values);
 
-            using (var connection = new SqlConnection($"Data Source = {nameDataBase}"))
+            using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[goalIndex - 1]}'";
+                    cmd.ExecuteNonQuery();
                     return goals[goalIndex - 1] + " удалена";
                 }
             }
@@ -286,7 +287,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     for (int i = 0; i < goalsCurentUser.Count - 1; i++)
                     {
 
-                        string tempResultate = goalsCurentUser[i].ToString() + "\n\n";
+                        string tempResultate = goalsCurentUser[idGoals[i]].ToString() + "\n\n";
                         cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
                             $"JOIN Goals ON Users.id == Goals.userId " +
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
@@ -310,7 +311,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
                         if (AVGMarks.Count == 0)
                         {
-                            resultate += "Average weekly score:\nВы недавно начали движение к цели.\nЕще нет оценок.";
+                            resultate += "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет.";
                         }
                         else
                         {
