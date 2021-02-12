@@ -298,10 +298,10 @@ namespace Goal_Achievement_Control_Windows_App.Core
                         {
                             while (reader.Read())
                             {
-                                dateMarks.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
+                                dateMarks.Add(new Pair<DateTime, int>(Convert.ToDateTime(reader["Date"]), Convert.ToInt32(reader["mark"])));
                                 if ((dateMarks.Count % 7 == 0 && dateMarks.Count != 0) || DateTime.Now.DayOfWeek == DayOfWeek.Monday)
                                 {
-                                    AVGMarks.Add(new Pair<string, double>($"Average weekly score:\nfrom {dateMarks[0].First} to {dateMarks[dateMarks.Count - 1].First}", CalculatingAVGMark(dateMarks)));
+                                    AVGMarks.Add(new Pair<string, double>($"Average weekly score:\nfrom {dateMarks[0].First.ToShortDateString()} to {dateMarks[dateMarks.Count - 1].First.ToShortDateString()}", CalculatingAVGMark(dateMarks)));
                                     dateMarks.Clear();
                                 }
                                 tempResultate += $"{reader["Date"]} - {reader["mark"]}\n";

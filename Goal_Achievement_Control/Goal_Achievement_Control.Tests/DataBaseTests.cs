@@ -303,7 +303,7 @@ namespace Goal_Achievement_Control.Tests
         [TestMethod]
         public void GetGoals_1_11TestGoalReturned()
         {
-            string execute = "11. TestGoal\n";
+            string execute = "1TestGoal";
             string actual = "";
             try
             {
@@ -395,6 +395,44 @@ namespace Goal_Achievement_Control.Tests
 
 
             Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void MarksLastFourWeeks()
+        {
+            string execute = $"TestGoal\n\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"______________________________________________\n\n" +
+                $"Average weekly score:\nfrom {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()} - 1;\n" +
+                $"Average weekly score:\nfrom {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()} - 1;\n" +
+                $"Average weekly score:\nfrom {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()} - 1;\n" +
+                $"Average weekly score:\nfrom {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()} - 1;\n";
+            string actual = "";
+
+            try
+            {
+                db.AddUser("1", "1", OperatingMode.NON);
+                db.AddGoal("TestGoal", 1);;
+
+                for (int i = 1; i <= 40; ++i)
+                {
+                    db.AddMarks(1, new string[] { "1" }, new List<int>() { 1 });
+                }
+
+                actual = db.MarksLastFourWeeks(1);
+            }
+
+            finally
+            {
+                ClearTable("Users");
+                ClearTable("Goals");
+                ClearTable("Marks");
+            }
+
+            Assert. AreEqual(execute, actual);
         }
 
         public void Drop_TestTable(string nameTable)
