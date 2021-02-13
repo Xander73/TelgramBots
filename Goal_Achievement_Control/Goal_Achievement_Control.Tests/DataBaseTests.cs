@@ -4,6 +4,7 @@ using Goal_Achievement_Control.CurrentBot;
 using System.Data.SQLite;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Goal_Achievement_Control.Tests
 {
@@ -372,7 +373,7 @@ namespace Goal_Achievement_Control.Tests
         /// Тест с нулем совпадений
         /// </summary>
         [TestMethod]
-        public void MarksLastFourWeeks_______()
+        public void MarksLastFourWeeks_0Marks_SpecialMessageReturned()
         {
             string execute = "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет.";
             string actual = "";
@@ -398,7 +399,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void MarksLastFourWeeks()
+        public void MarksLastFourWeeks_40Marks_28Marksreturned()
         {
             string execute = $"TestGoal\n\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
                 $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
@@ -433,6 +434,45 @@ namespace Goal_Achievement_Control.Tests
             }
 
             Assert. AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void MarksAll_40Marks_40Marksreturned()
+        {
+            string execute = $"TestGoal\n\n" +
+
+$"Week from {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()}: 1\n" +
+$"Week from {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()}: 1\n" +
+$"Week from {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()}: 1\n" +
+$"Week from {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()}: 1\n" +
+$"Week from {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()}: 1\n" +
+$"Week from {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()}: 1\n" +
+"______________________________________________\n\n" +
+
+$"Month - {DateTime.Now.ToString("MMM", CultureInfo.CurrentCulture)}:  1\n";
+            string actual = "";
+
+            try
+            {
+                db.AddUser("1", "1", OperatingMode.NON);
+                db.AddGoal("TestGoal", 1); ;
+
+                for (int i = 1; i <= 40; ++i)
+                {
+                    db.AddMarks(1, new string[] { "1" }, new List<int>() { 1 });
+                }
+
+                actual = db.MarksAll(1);
+            }
+
+            finally
+            {
+                ClearTable("Users");
+                ClearTable("Goals");
+                ClearTable("Marks");
+            }
+
+            Assert.AreEqual(execute, actual);
         }
 
         public void Drop_TestTable(string nameTable)

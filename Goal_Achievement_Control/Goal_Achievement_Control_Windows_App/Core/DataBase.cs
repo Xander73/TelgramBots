@@ -5,6 +5,7 @@ using System.IO;
 using Goal_Achievement_Control.CurrentBot;
 using System.Data.SqlClient;
 using Goal_Achievement_Control_Windows_App.Interfaces;
+using System.Globalization;
 
 namespace Goal_Achievement_Control_Windows_App.Core
 {
@@ -341,24 +342,37 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 using (var cmd = connection.CreateCommand())
                 {
                     List<int> idGoals = new List<int>(goalsCurentUser.Keys);
-                    for (int i = 0; i < goalsCurentUser.Count - 1; i++)
+                    for (int i = 0; i < goalsCurentUser.Count; i++)
                     {
                         string tempResultate = goalsCurentUser[idGoals[i]] + "\n\n";
                         cmd.CommandText = $"SELECT telegramId, Goal, Date, mark FROM Users " +
                             $"JOIN Goals ON Users.id == Goals.userId " +
                             $"JOIN Marks ON Goals.id == Marks.goal_id " +
-                            $"WHERE Goals.id == '{idGoals[i]}' " +
-                            $"ORDER BY Goals.id DESC";
+                            $"WHERE Goals.id == '{idGoals[i]}' "; //+
+                           // $"ORDER BY Goals.id DESC";
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {                                
-                                dateMarksAll.Add(new Pair<DateTime, int>((DateTime)reader["Date"], (int)reader["mark"]));
+                                dateMarksAll.Add(new Pair<DateTime, int>(Convert.ToDateTime(reader["Date"]), (Convert.ToInt32(reader["mark"]))));
                             }
                         }
-                        resultate += tempResultate + CalculatingAVGMarkWeekly(dateMarksAll) +
+
+                        string tempAVGMarkWeekly = "";
+                        foreach (var v in CalculatingAVGMarkWeekly(dateMarksAll))
+                        {
+                            tempAVGMarkWeekly += v.First + v.Second.ToString() + '\n';
+                        }
+
+                        string tempAVGMarkMonthly = "";
+                        foreach (var v in CalculatingAVGMarkMonthly(dateMarksAll))
+                        {
+                            tempAVGMarkMonthly += v.First + v.Second.ToString() + '\n';
+                        }
+
+                        resultate += tempResultate + tempAVGMarkWeekly +
                             "______________________________________________\n\n" +
-                            CalculatingAVGMarkMonthly(dateMarksAll);
+                            tempAVGMarkMonthly;
                     }                        
                     return resultate;
                 }
@@ -393,12 +407,12 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 if ((i + 1) % 7 == 0 && i > 0)
                 {
                     indexLastday = i + 1;
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[indexLastday-7].First} to {datesMarks[i].First}: ", 
-                                          CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[indexLastday-7].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ", 
+                                          CalculatingAVGMark(datesMarks.GetRange(indexLastday - 7, 7))));
                 }
                 else if ((i + 1) == datesMarks.Count)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i-(i-indexLastday)].First} to {datesMarks[i].First}: ",
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i-(i-indexLastday)].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ",
                                           CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
                 }
             }
@@ -421,13 +435,13 @@ namespace Goal_Achievement_Control_Windows_App.Core
             {
                 if (monthDayLast < datesMarks[i].First)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.Month}: ", CalculatingAVGMark(datesMarks.GetRange(i - monthDayLast.Day, monthDayLast.Day))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.ToString("MMM", CultureInfo.CurrentCulture)}: ", CalculatingAVGMark(datesMarks.GetRange(i - monthDayLast.Day, monthDayLast.Day))));
                     indexFirstDay = i;
                     monthDayLast = datesMarks[i].First.AddMonths(1).AddDays(-1);
                 }
                 else if ((i + 1) == datesMarks.Count)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.Month}:  ", CalculatingAVGMark(datesMarks.GetRange(i - (i - indexFirstDay), i - indexFirstDay))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.ToString("MMM", CultureInfo.CurrentCulture)}:  ", CalculatingAVGMark(datesMarks.GetRange(i - (i - indexFirstDay), i - indexFirstDay))));
                 }
             }
             return resultateAVGMarks;
