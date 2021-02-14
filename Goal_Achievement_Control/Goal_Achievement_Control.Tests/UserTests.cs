@@ -33,5 +33,26 @@ namespace Goal_Achievement_Control.Tests
             }
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void AddGoal_TestGoal_TestGoalReturned()
+        {
+            string execute = "TestGoal";
+            string actual = "";
+
+            try
+            {
+                user.AddGoal("TestGoal");
+                foreach (var v in db.GetGoals(1))
+                {
+                    actual += v.Value;
+                }
+            }
+            finally
+            {
+                DBTests.ClearTable("Goals");
+            }
+            Assert.AreEqual(execute, actual);               
+        }
     }    
 }
