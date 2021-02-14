@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Goal_Achievement_Control_Windows_App.Core;
+using Goal_Achievement_Control.CurrentBot;
+using System.Data.SQLite;
 
 namespace Goal_Achievement_Control.Tests
 {
@@ -127,18 +129,38 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void AddMarks_5_5Retuurned()
+        public void AddMarks_5_5Returned()
         {
-            int execute = 5;
-            int actual = -1;
+            string execute = "5";
+            string  actual = "";
             try
             {
+                db.AddUser("1", "1", OperatingMode.NON);
                 user.AddGoal("TestGoal");
-                actual = user.CountGoals();
+                User tempUser = new User(db, id, message);
+                tempUser.AddMarks("5");
+
+                using (var connected = new SQLiteConnection ($"Data Source = {db.NameDataBase}"))
+                {
+                    connected.Open();
+                    using (var cmd = connected.CreateCommand())
+                    {
+                        cmd.CommandText = $"SELECT mark FROM MARKS WHERE goal_id == 1";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                actual += reader["mark"];
+                            }
+                        }
+                    }
+                }
             }
             finally
             {
                 DBTests.ClearTable("Goals");
+                DBTests.ClearTable("Marks");
+                DBTests.ClearTable("Users");
             }
 
             Assert.AreEqual(execute, actual);

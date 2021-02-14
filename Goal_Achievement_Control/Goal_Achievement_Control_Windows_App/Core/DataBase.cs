@@ -411,7 +411,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
         private List<Pair<string, double>> CalculatingAVGMarkWeekly(List<Pair<DateTime, int>> datesMarks)
         {
             List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();
-            int indexLastday = 0;
+            int indexLastDay = 0;
 
             if (datesMarks.Count == 0)
             {
@@ -422,14 +422,14 @@ namespace Goal_Achievement_Control_Windows_App.Core
             {
                 if ((i + 1) % 7 == 0 && i > 0)
                 {
-                    indexLastday = i + 1;
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[indexLastday-7].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ", 
-                                          CalculatingAVGMark(datesMarks.GetRange(indexLastday - 7, 7))));
+                    indexLastDay = i + 1;
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[indexLastDay-7].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ", 
+                                          CalculatingAVGMark(datesMarks.GetRange(indexLastDay - 7, 7))));
                 }
                 else if ((i + 1) == datesMarks.Count)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i-(i-indexLastday)].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ",
-                                          CalculatingAVGMark(datesMarks.GetRange(i - 7, 7))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i - (i - indexLastDay)].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ",
+                                          CalculatingAVGMark(datesMarks.GetRange(i - indexLastDay, i+1))));
                 }
             }
             return resultateAVGMarks;
@@ -457,7 +457,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 }
                 else if ((i + 1) == datesMarks.Count)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.ToString("MMM", CultureInfo.CurrentCulture)}:  ", CalculatingAVGMark(datesMarks.GetRange(i - (i - indexFirstDay), i - indexFirstDay))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.ToString("MMM", CultureInfo.CurrentCulture)}:  ", CalculatingAVGMark(datesMarks.GetRange(i - (i - indexFirstDay), i - indexFirstDay+1))));
                 }
             }
             return resultateAVGMarks;
