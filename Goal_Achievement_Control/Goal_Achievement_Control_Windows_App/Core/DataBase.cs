@@ -6,6 +6,7 @@ using Goal_Achievement_Control.CurrentBot;
 using System.Data.SqlClient;
 using Goal_Achievement_Control_Windows_App.Interfaces;
 using System.Globalization;
+using System.Data;
 
 namespace Goal_Achievement_Control_Windows_App.Core
 {
@@ -268,6 +269,21 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[goalIndex - 1]}'";
                     cmd.ExecuteNonQuery();
                     return goals[goalIndex - 1] + " удалена";
+                }
+            }
+        }
+
+        public int CountGoals(int id)
+        {
+            using (var connection = new SQLiteConnection($"Data Sourse = {NameDataBase}"))
+            {
+                connection.Open();
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = $"SELECT Count (Goal) FROM Goals WHERE {id} == userId";
+                    cmd.CommandType = CommandType.Text;
+
+                    return Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
         }

@@ -28,7 +28,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 message.Text = messageHandler.RateTypeMessage(Message);
             }
         }
-        private Dictionary<int, string> goals;
+        private Dictionary<int, string> goals;        
         private DataBase dataBase;
         public DataBase DataBase
         {
@@ -79,22 +79,12 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
 
         public int CountGoals ()
         {
-            using (var connection = new SQLiteConnection ($"Data Sourse = {dataBase.NameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"SELECT Count (Goal) FROM Goals WHERE {ID} == userId";
-                    cmd.CommandType = CommandType.Text;
-
-                    return Convert.ToInt32(cmd.ExecuteScalar());
-                }
-            }
+            return DataBase.CountGoals(ID);  
         }
 
-        public string AddMarks (string text)
+        public string AddMarks (string newMarks)
         {
-            string [] marks = text.Replace(" ", "").Split(',');
+            string [] marks = newMarks.Replace(" ", "").Split(',');
 
             List<int> goals = new List<int>(dataBase.GetGoals(ID).Keys);
 

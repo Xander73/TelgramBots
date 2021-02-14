@@ -282,7 +282,7 @@ namespace Goal_Achievement_Control.Tests
             string execute = "21";
             string actual = null;
             db.AddUser("2", "1", OperatingMode.NON);
-            string[] tempKeyValue = new string [2];
+            string[] tempKeyValue = new string[2];
             try
             {
                 var temp = db.GetTelegramIdUsers();
@@ -295,7 +295,7 @@ namespace Goal_Achievement_Control.Tests
             {
                 ClearTable("Users");
                 Assert.AreEqual(execute, actual);
-            }            
+            }
         }
 
         /// <summary>
@@ -317,12 +317,12 @@ namespace Goal_Achievement_Control.Tests
                     actual += v.Key.ToString() + v.Value;
                 }
             }
-            
+
             finally
             {
                 ClearTable("Goals");
             }
-            
+
             Assert.AreEqual(execute, actual);
         }
 
@@ -338,7 +338,7 @@ namespace Goal_Achievement_Control.Tests
                 //db.AddGoal("TestGoal", 1);
                 string s = db.DeleteGoal(1, 1);
 
-                using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}")) 
+                using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
                 {
                     connected.Open();
                     using (var cmd = connected.CreateCommand())
@@ -416,7 +416,7 @@ namespace Goal_Achievement_Control.Tests
             try
             {
                 db.AddUser("1", "1", OperatingMode.NON);
-                db.AddGoal("TestGoal", 1);;
+                db.AddGoal("TestGoal", 1); ;
 
                 for (int i = 1; i <= 40; ++i)
                 {
@@ -433,7 +433,7 @@ namespace Goal_Achievement_Control.Tests
                 ClearTable("Marks");
             }
 
-            Assert. AreEqual(execute, actual);
+            Assert.AreEqual(execute, actual);
         }
 
         [TestMethod]
@@ -475,6 +475,8 @@ $"Month - {DateTime.Now.ToString("MMM", CultureInfo.CurrentCulture)}:  1\n";
             Assert.AreEqual(execute, actual);
         }
 
+        
+                
         public void Drop_TestTable(string nameTable)
         {
             using (var connected = new SQLiteConnection($"Data Source = {db.NameDataBase}"))
