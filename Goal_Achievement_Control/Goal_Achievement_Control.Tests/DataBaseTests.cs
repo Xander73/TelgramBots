@@ -475,7 +475,29 @@ $"Month - {DateTime.Now.ToString("MMM", CultureInfo.CurrentCulture)}:  1\n";
             Assert.AreEqual(execute, actual);
         }
 
-        
+        [TestMethod]
+        public void CountGoals_1_2Returned()
+        {
+            int execute = 2;
+            int actual = 0;
+            try
+            {
+                for (int i = 0; i < 2; ++i)
+                {
+                    db.AddGoal($"TestGoal", 1);
+                }
+
+                actual = db.CountGoals(1);
+            }
+
+            finally
+            {
+                ClearTable("Goals");
+            }
+
+            Assert.AreEqual(execute, actual);
+
+        }
                 
         public void Drop_TestTable(string nameTable)
         {
