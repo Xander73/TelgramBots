@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using Goal_Achievement_Control.CurrentBot;
 using Goal_Achievement_Control_Windows_App.CurrentBot;
-using Goal_Achievement_Control_Windows_App.Helpers;
+using Goal_Achievement_Control_Windows_App.Core;
 
 namespace Goal_Achievement_Control_Windows_App.CurrentBot
 {
-    class InputMessageHandler : BaseInputMessageHandler
+    public class InputMessageHandler : BaseInputMessageHandler
     {
         //TypeInputMessage typeMessage;
         User user;

@@ -13,9 +13,9 @@ using System.Data;
 using System.Security.Principal;
 using Goal_Achievement_Control_Windows_App.Interfaces;
 
-namespace Goal_Achievement_Control_Windows_App.Helpers 
+namespace Goal_Achievement_Control_Windows_App.Core 
 {
-    class User : IUser
+    public class User : IUser
     {
         public OperatingMode Mode { get; set; }
         private Telegram.Bot.Types.Message message;
@@ -28,7 +28,7 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
                 message.Text = messageHandler.RateTypeMessage(Message);
             }
         }
-        private Dictionary<int, string> goals;        
+        private Dictionary<int, string> goals;          
         private DataBase dataBase;
         public DataBase DataBase
         {
@@ -72,8 +72,8 @@ namespace Goal_Achievement_Control_Windows_App.Helpers
         }
         
         public string DeleteGoal (int goalIndex)
-        {
-            DataBase.DeleteGoal(ID, goalIndex - 1);
+        {            
+            DataBase.DeleteGoal(ID, goalIndex - 1);            
             return "Цель удалена";
         }
 

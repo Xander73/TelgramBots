@@ -9,7 +9,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
     //{
     //    Command, Text, NONE
     //}
-    abstract class BaseInputMessageHandler
+    public abstract class BaseInputMessageHandler
     {
         public string RateTypeMessage (Telegram.Bot.Types.Message inputMessage)
         {

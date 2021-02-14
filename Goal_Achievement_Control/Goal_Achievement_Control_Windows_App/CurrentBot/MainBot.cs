@@ -1,4 +1,4 @@
-﻿using Goal_Achievement_Control_Windows_App.Helpers;
+﻿using Goal_Achievement_Control_Windows_App.Core;
 using Goal_Achievement_Control_Windows_App.CurrentBot;
 using System;
 using System.Collections.Generic;
