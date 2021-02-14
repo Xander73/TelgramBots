@@ -28,7 +28,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 message.Text = messageHandler.RateTypeMessage(Message);
             }
         }
-        private Dictionary<int, string> goals;          
+        private Dictionary<int, string> goals;  
         private DataBase dataBase;
         public DataBase DataBase
         {
@@ -62,19 +62,35 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 {
                     temp += v.Value + '\n';     //выведем значения и объединим их в одну строку
                 }
-                return temp;                                                       
+                return temp ?? "Нет целей";                                                       
         }
 
         public string AddGoal (string goal)
         {
-            dataBase.AddGoal(goal, ID);
-            return "Цель добавлена";
+            if (!string.IsNullOrWhiteSpace(goal))
+            {
+                dataBase.AddGoal(goal, ID);
+                return "Цель добавлена";
+            }
+            else
+            {
+                return "Строка пустая. Цель не добавлена.";
+            }
+            
         }
         
         public string DeleteGoal (int goalIndex)
         {            
-            DataBase.DeleteGoal(ID, goalIndex - 1);            
-            return "Цель удалена";
+            if (goalIndex < goals.Count && goalIndex > 0)
+            {
+                DataBase.DeleteGoal(ID, goalIndex - 1);
+                return "Цель удалена";
+            }
+            else
+            {
+                return "Указанный порядковый номер не соответствует порядковому номеру какой-либо цели";
+            }
+            
         }
 
         public int CountGoals ()

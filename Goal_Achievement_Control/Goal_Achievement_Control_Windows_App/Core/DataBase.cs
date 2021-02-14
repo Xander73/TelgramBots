@@ -247,7 +247,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                     Dictionary<int, string> resultate = new Dictionary<int, string>();
                     using (var reader = cmd.ExecuteReader())
                     {
-                        for (int i = 1; reader.Read(); ++i)
+                        while (reader.Read())
                         {
                             resultate.Add(Convert.ToInt32(reader["id"]), reader["Goal"].ToString());
                         }
