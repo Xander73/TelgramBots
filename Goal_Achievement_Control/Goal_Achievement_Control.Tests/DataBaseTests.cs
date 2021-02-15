@@ -402,10 +402,14 @@ namespace Goal_Achievement_Control.Tests
         public void MarksLastFourWeeks_40Marks_28Marksreturned()
         {
             string execute = $"TestGoal\n\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
-                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
-                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
-                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
-                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
+                $"{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n{DateTime.Now.ToShortDateString()} - 1\n" +
                 $"______________________________________________\n\n" +
                 $"Average weekly score:\nfrom {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()} - 1;\n" +
                 $"Average weekly score:\nfrom {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()} - 1;\n" +

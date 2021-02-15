@@ -76,7 +76,7 @@ namespace Goal_Achievement_Control.Tests
         [TestMethod]
         public void DeleteGoal_1_0Returned()
         {
-            string execute = null;
+            string execute = "Нет целей";
             string actual = "empty";
             try
             {

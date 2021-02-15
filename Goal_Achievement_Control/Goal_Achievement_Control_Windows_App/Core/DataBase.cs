@@ -316,8 +316,8 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             while (reader.Read())
                             {
                                 dateMarks.Add(new Pair<DateTime, int>(Convert.ToDateTime(reader["Date"]), Convert.ToInt32(reader["mark"])));
-                                if ((dateMarks.Count % 7 == 0 && dateMarks.Count != 0) || DateTime.Now.DayOfWeek == DayOfWeek.Monday)
-                                {
+                                if ((dateMarks.Count % 7 == 0 && dateMarks.Count != 0) /*|| dateMarks[dateMarks.Count - 1].First.DayOfWeek == DayOfWeek.Monday*/)
+                                {                                    
                                     AVGMarks.Add(new Pair<string, double>($"Average weekly score:\nfrom {dateMarks[0].First.ToShortDateString()} to {dateMarks[dateMarks.Count - 1].First.ToShortDateString()}", CalculatingAVGMark(dateMarks)));
                                     dateMarks.Clear();
                                 }
@@ -411,7 +411,8 @@ namespace Goal_Achievement_Control_Windows_App.Core
         private List<Pair<string, double>> CalculatingAVGMarkWeekly(List<Pair<DateTime, int>> datesMarks)
         {
             List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();
-            int indexLastDay = 0;
+            int indexLastCheckedDay = 0;
+            const int DAYS_IN_WEEK = 7;
 
             if (datesMarks.Count == 0)
             {
@@ -420,16 +421,24 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
             for (int i = 0; i < datesMarks.Count; ++i)
             {
-                if ((i + 1) % 7 == 0 && i > 0)
+                if ((i + 1) % DAYS_IN_WEEK == 0 && i > 0)
                 {
-                    indexLastDay = i + 1;
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[indexLastDay-7].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ", 
-                                          CalculatingAVGMark(datesMarks.GetRange(indexLastDay - 7, 7))));
+                    indexLastCheckedDay = i + 1;
+                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[indexLastCheckedDay- DAYS_IN_WEEK].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ", 
+                                          CalculatingAVGMark(datesMarks.GetRange(indexLastCheckedDay - DAYS_IN_WEEK, DAYS_IN_WEEK))));
                 }
                 else if ((i + 1) == datesMarks.Count)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i - (i - indexLastDay)].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ",
-                                          CalculatingAVGMark(datesMarks.GetRange(i - indexLastDay, i+1))));
+                    if (datesMarks.Count < DAYS_IN_WEEK)
+                    {
+                        resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i - (i - indexLastCheckedDay)].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ",
+                                          CalculatingAVGMark(datesMarks.GetRange(i - (i - indexLastCheckedDay), datesMarks.Count))));
+                    }
+                    else
+                    {
+                        resultateAVGMarks.Add(new Pair<string, double>($"Week from {datesMarks[i - (i - indexLastCheckedDay)].First.ToShortDateString()} to {datesMarks[i].First.ToShortDateString()}: ",
+                                          CalculatingAVGMark(datesMarks.GetRange(i - (i - indexLastCheckedDay), i - indexLastCheckedDay))));
+                    }                    
                 }
             }
             return resultateAVGMarks;
