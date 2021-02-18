@@ -39,7 +39,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             {
                 if (user.CountGoals() < 15)
                 {
-                    user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddGoal);      //в следующем сообщении программа ожидает цель
+                    user.Mode = OperatingMode.AddGoal;      //в следующем сообщении программа ожидает цель
                     return "Режим редактирования целей открыт.";
                 }    
                 else
@@ -49,22 +49,22 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             }
             else if (commandText.ToLower () == "/остановить ввод целей")
             {
-                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);    //OperatingMode.NON - нет режима работы бота
+                user.Mode = OperatingMode.NON;    //OperatingMode.NON - нет режима работы бота
                 return "Режим редактирования целей закрыт.";
             }
             else if (commandText.ToLower() == "/удалить")
             {
-                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.DeleteGoal);
-                return $"Режим удаления целей открыт.\n{user.GoalsToString()}\nВведите номер цели, которую требуется удалить.";
+                user.Mode = OperatingMode.DeleteGoal;
+                return $"Режим удаления целей открыт.\n{ListGoalsToString()}\nВведите номер цели, которую требуется удалить.";
             }
             else if (commandText.ToLower() == "/цели")  //вывести список целей
             {                
-                return user.GoalsToString();
+                return ListGoalsToString();
             }
             else if (commandText.ToLower() == "/ввести оценки")
             {
-                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.AddMark);
-                return $"Режим ввода оценок открыт.\n{user.GoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10";
+                user.Mode = OperatingMode.AddMark;
+                return $"Режим ввода оценок открыт.\n{ListGoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10";
             }
             else if (commandText.ToLower() == "/статистика за 4 недели")
             {
@@ -94,11 +94,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                     user.Mode = OperatingMode.NON;
 
                     string temp = $"Введено максиальное количество целей.\nБот вышел из режима редактирования целей.\nВведите номер цели, которую требуется удалить.\n";
-                    string[] goals = user.GoalsToString().Split('\n');
-                    for (int i = 0; i < goals.Length; ++i)
-                    {
-                        temp += $"{i}) {goals[i]}\n";
-                    }
+                    
 
                     return temp;
                 }
@@ -116,6 +112,17 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
 
             user.Mode = OperatingMode.NON;
             return "Неизвестный тип сообщения.\nРежим работы переведен в начальный";
+        }
+
+        public string ListGoalsToString()
+        {
+            string temp = "";
+            string[] goals = user.GoalsToString().Split('\n');
+            for (int i = 0; i < goals.Length; ++i)
+            {
+                temp += $"{i}) {goals[i]}\n";
+            }
+            return temp;
         }
     }
 }
