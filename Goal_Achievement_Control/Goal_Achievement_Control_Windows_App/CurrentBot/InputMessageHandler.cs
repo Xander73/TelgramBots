@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Goal_Achievement_Control.CurrentBot;
-using Goal_Achievement_Control_Windows_App.CurrentBot;
 using Goal_Achievement_Control_Windows_App.Core;
 
 namespace Goal_Achievement_Control_Windows_App.CurrentBot
@@ -25,7 +22,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 {
                     if (user.CountGoals() < 15)
                     {
-                        return "Вы уже начали путь к достижению цели. Необходимо минимум 3 цели.\nЧтобы добавить еще одну цель введите команду \"/Добаить цель\".";
+                        return "Вы уже начали путь к достижению цели. Необходимо минимум 3 цели.\nЧтобы добавить еще одну цель, введите команду \"/Добаить цель\".";
                     } 
                     else
                     {
@@ -35,7 +32,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 else
                 {
                     user.Mode = OperatingMode.AddGoal;        //режим ввода целей
-                    return "Введите от 3 до 15 целей./nРежим редактирования целей открыт.";                    
+                    return "Введите по одной цели./nРежим редактирования целей открыт.";                    
                 }
             }
             else if (commandText.ToLower () == "/добавить цель")
@@ -87,13 +84,23 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
         {
             if (user.Mode == OperatingMode.AddGoal)
             {
-                if (user.CountGoals() < 15)     //
+                int countGoals = user.CountGoals();
+                if (countGoals < 15)     //
                 {
-                    return user.AddGoal(text);
+                    if (countGoals < 3)
+                    {
+                        return user.AddGoal(text);
+                    }
+                    else
+                    {
+                        user.Mode = OperatingMode.NON;
+                        return user.AddGoal(text);
+                    }
+                    
                 }
                 else
                 {
-                    user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);
+                    user.Mode = OperatingMode.NON;
                     return $"Введено максиальное количество целей.\n{user.GoalsToString()}\nВведите номер цели, которую требуется удалить.\n";
                 }
             }
