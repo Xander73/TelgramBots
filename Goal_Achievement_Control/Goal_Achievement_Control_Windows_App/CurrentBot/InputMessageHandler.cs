@@ -86,27 +86,26 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             {
                 int countGoals = user.CountGoals();
                 if (countGoals < 15)     //
-                {
-                    if (countGoals < 3)
-                    {
-                        return user.AddGoal(text);
-                    }
-                    else
-                    {
-                        user.Mode = OperatingMode.NON;
-                        return user.AddGoal(text);
-                    }
-                    
+                {                        
+                    return user.AddGoal(text);                    
                 }
                 else
                 {
                     user.Mode = OperatingMode.NON;
-                    return $"Введено максиальное количество целей.\n{user.GoalsToString()}\nВведите номер цели, которую требуется удалить.\n";
+
+                    string temp = $"Введено максиальное количество целей.\nБот вышел из режима редактирования целей.\nВведите номер цели, которую требуется удалить.\n";
+                    string[] goals = user.GoalsToString().Split('\n');
+                    for (int i = 0; i < goals.Length; ++i)
+                    {
+                        temp += $"{i}) {goals[i]}\n";
+                    }
+
+                    return temp;
                 }
             }
             else if (user.Mode == OperatingMode.DeleteGoal)
             {
-                user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);
+                user.Mode = OperatingMode.NON;
                 return user.DeleteGoal(Convert.ToInt32(text));
             }
 
@@ -115,7 +114,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 return user.AddMarks(text);
             }
 
-            user.DataBase.ChangeOperatingMode(user.ID, OperatingMode.NON);
+            user.Mode = OperatingMode.NON;
             return "Неизвестный тип сообщения.\nРежим работы переведен в начальный";
         }
     }
