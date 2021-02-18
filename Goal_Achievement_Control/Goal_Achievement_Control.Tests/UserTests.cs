@@ -52,8 +52,19 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(execute, actual);
         }
 
+        [TestMethod]
+        public void GoalsToString_nullGoals()
+        {
+            string execute = "Нет целей";
+            string actual = "";
+            
+            actual = user.GoalsToString();            
+            
+            Assert.AreEqual(execute, actual);
+        }
+
         /// <summary>
-        /// tempUser создается т.к. в конструкторе User поле goals сразу инициализируется и пустое в объекте user;
+        /// tempUser создается т.к. в конструкторе User сразу инициализируется поле goals и оказывается пустым в объекте user;
         /// </summary>
         [TestMethod]
         public void GoalsToString_TestGoal_TestGoalReturned()
