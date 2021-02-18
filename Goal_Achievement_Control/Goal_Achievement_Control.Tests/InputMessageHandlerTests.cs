@@ -12,8 +12,8 @@ namespace Goal_Achievement_Control.Tests
         [TestMethod]
         public void ListGoalsToString_nullGoals()
         {
-            string execute = "";
-            string actual = "Empty string";
+            string execute = "Нет целей";
+            string actual = "";
 
             actual = imh.ListGoalsToString();
 

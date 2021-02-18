@@ -119,12 +119,16 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             string temp = "";
             string[] goals = user.GoalsToString().Split('\n');
 
+            if (goals[0] == "Нет целей")
+            {
+                return goals[0];
+            }
 
             for (int i = 0; i < goals.Length; ++i)
             {
                 temp += $"{i}) {goals[i]}\n";
             }
-            return string.IsNullOrWhiteSpace(temp) ? "Нет целей." : temp;
+            return temp;
         }
     }
 }
