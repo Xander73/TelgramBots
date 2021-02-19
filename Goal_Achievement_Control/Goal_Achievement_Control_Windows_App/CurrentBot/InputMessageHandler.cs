@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Goal_Achievement_Control.CurrentBot;
 using Goal_Achievement_Control_Windows_App.Core;
 
@@ -117,16 +118,20 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
         public string ListGoalsToString()
         {
             string temp = "";
-            string[] goals = user.GoalsToString().Split('\n');
+            List<string> goals = new List<string>();
+            foreach (var v in user.DataBase.GetGoals(user.ID).Values)
+            {
+                goals.Add(v);
+            }
 
             if (goals[0] == "Нет целей")
             {
                 return goals[0];
             }
 
-            for (int i = 0; i < goals.Length; ++i)
+            for (int i = 0; i < goals.Count; ++i)
             {
-                temp += $"{i}) {goals[i]}\n";
+                temp += $"{i+1}) {goals[i]}\n";
             }
             return temp;
         }

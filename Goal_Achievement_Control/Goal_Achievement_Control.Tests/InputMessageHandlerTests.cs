@@ -19,6 +19,26 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void ListGoalsToString_TestGoal_1TestGoal()
+        {
+            string execute = "1) TestGoal\n";
+            string actual = "";
+            try
+            {
+                db.AddGoal("TestGoal", 1);
+
+                InputMessageHandler imh2 = new InputMessageHandler(new User(new DataBase("TestDB"), 1, new Telegram.Bot.Types.Message()));
+                actual = imh2.ListGoalsToString();
+            }
+            finally
+            {
+                db.ClearTable("Goals");
+            }                        
+
+            Assert.AreEqual(execute, actual);
+        }
     }
     
 }

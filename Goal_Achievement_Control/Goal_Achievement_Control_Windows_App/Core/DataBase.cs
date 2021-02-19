@@ -471,7 +471,20 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
             return resultateAVGMarks;
         }
-        
+
+        public void ClearTable(string nameTable)
+        {
+            using (var connacted = new SQLiteConnection($"Data Source = {NameDataBase}"))
+            {
+                connacted.Open();
+                using (var cmd = connacted.CreateCommand())
+                {
+                    cmd.CommandText = $"DELETE FROM {nameTable}";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         #endregion
 
         void temp()
