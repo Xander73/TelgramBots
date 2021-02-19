@@ -86,7 +86,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             if (user.Mode == OperatingMode.AddGoal)
             {
                 int countGoals = user.CountGoals();
-                if (countGoals < 15)     //
+                if (countGoals < 15)     
                 {                        
                     return user.AddGoal(text);                    
                 }
@@ -94,10 +94,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 {
                     user.Mode = OperatingMode.NON;
 
-                    string temp = $"Введено максиальное количество целей.\nБот вышел из режима редактирования целей.\nВведите номер цели, которую требуется удалить.\n";
-                    
-
-                    return temp;
+                    return "Введено максиальное количество целей.\nБот вышел из режима редактирования целей.\n";
                 }
             }
             else if (user.Mode == OperatingMode.DeleteGoal)
