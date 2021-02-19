@@ -50,6 +50,18 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void RateTypeMessage_UnnownCommand()
+        {
+            string execute = "Неизвестная команда";
+            string actual = "";
+            var message = new Telegram.Bot.Types.Message();
+            message.Text = "/команда";
+            actual = imh.RateTypeMessage(message);
+
+            Assert.AreEqual(execute, actual);
+        }
     }
     
 }
