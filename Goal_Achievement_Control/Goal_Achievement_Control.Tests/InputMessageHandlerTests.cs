@@ -87,7 +87,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void CommandHandler_TestGoal_stringReturned()
+        public void CommandHandler_OperatingModeAddTestGoal_stringReturned()
         {
             string execute = "Цель добавлена";
             string actual = "";
@@ -102,7 +102,28 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(execute, actual);
         }
 
-        
+        [TestMethod]
+        public void CommandHandler_OperatingModeAddMore15TestGoals_stringReturned()
+        {
+            string execute = "Введено максиальное количество целей.\nБот вышел из режима редактирования целей.\n";
+            string actual = "";
+
+            for (int i =0; i < 15; ++i)
+            {
+                db.AddGoal($"TestGoal{i}", 1);
+            }
+
+            Telegram.Bot.Types.Message message = new Telegram.Bot.Types.Message();
+            message.Text = "Test Goal.";
+            InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.AddGoal));
+            actual = imh2.RateTypeMessage(message);
+
+            db.ClearAllTables();
+
+            Assert.AreEqual(execute, actual);
+        }
+
+
     }
     
 }
