@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Goal_Achievement_Control_Windows_App.Core;
 using Goal_Achievement_Control.CurrentBot;
+using System.Collections.Generic;
 
 namespace Goal_Achievement_Control.Tests
 {
@@ -149,6 +150,30 @@ namespace Goal_Achievement_Control.Tests
             Assert.AreEqual(execute, actual);
         }
 
+        [TestMethod]
+        public void TextHandler_OperatingModeAddMark_1_stringReturned()
+        {
+            string execute = "Оценки добавлены";
+            string actual = "";
+                        
+            try
+            {
+                db.AddUser("1", "1", OperatingMode.AddMark);
+                db.AddGoal("TestGoal", 1);
+                for (int i = 0; i < 2; ++i)
+                {
+                    db.AddMarks(1, new string[] {"1", "2" }, new List<int>() { 1 } );
+                }
+                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.AddMark));
+                actual = imh2.TextHandler("1");
+            }
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
     }
     
 }
