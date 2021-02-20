@@ -87,7 +87,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void CommandHandler_OperatingModeAddTestGoal_stringReturned()
+        public void TextHandler_OperatingModeAddTestGoal_stringReturned()
         {
             string execute = "Цель добавлена";
             string actual = "";
@@ -95,7 +95,7 @@ namespace Goal_Achievement_Control.Tests
             Telegram.Bot.Types.Message message = new Telegram.Bot.Types.Message();
             message.Text = "Test Goal.";
             InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.AddGoal));
-            actual = imh2.RateTypeMessage(message);
+            actual = imh2.TextHandler("Test Goal.");
 
             db.ClearAllTables();
 
@@ -103,7 +103,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void CommandHandler_OperatingModeAddMore15TestGoals_stringReturned()
+        public void TextHandler_OperatingModeAddMore16TestGoals_stringReturned()
         {
             string execute = "Введено максиальное количество целей.\nБот вышел из режима редактирования целей.\n";
             string actual = "";
@@ -116,13 +116,38 @@ namespace Goal_Achievement_Control.Tests
             Telegram.Bot.Types.Message message = new Telegram.Bot.Types.Message();
             message.Text = "Test Goal.";
             InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.AddGoal));
-            actual = imh2.RateTypeMessage(message);
+            actual = imh2.TextHandler("TestGoal16");
 
             db.ClearAllTables();
 
             Assert.AreEqual(execute, actual);
         }
 
+        [TestMethod]
+        public void TextHandler_OperatingModeDelete_Index1_stringReturned()
+        {
+            string execute = "Цель удалена";
+            string actual = "";
+
+            for (int i = 0; i < 2; ++i)
+            {
+                db.AddGoal($"TestGoal{i}", 1);
+            }
+
+            Telegram.Bot.Types.Message message = new Telegram.Bot.Types.Message();
+            message.Text = "Test Goal.";
+            try
+            {
+                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.DeleteGoal));
+                actual = imh2.TextHandler("1");
+            }
+            finally
+            {
+                db.ClearAllTables();
+            }                     
+
+            Assert.AreEqual(execute, actual);
+        }
 
     }
     

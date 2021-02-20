@@ -266,9 +266,9 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[goalIndex - 1]}'";
+                    cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[goalIndex]}'";
                     cmd.ExecuteNonQuery();
-                    return goals[goalIndex - 1] + " удалена";
+                    return goals[goalIndex] + " удалена";
                 }
             }
         }

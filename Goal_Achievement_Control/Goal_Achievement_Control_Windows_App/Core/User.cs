@@ -46,6 +46,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public User(DataBase db, int idCurrentUser, Telegram.Bot.Types.Message mes, OperatingMode mode = OperatingMode.NON)
         {
+            Mode = mode;
             messageHandler = new InputMessageHandler(this);
             dataBase = db;
             ID = idCurrentUser; //ID в базе данных
@@ -81,7 +82,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
         
         public string DeleteGoal (int goalIndex)
         {            
-            if (goalIndex < goals.Count && goalIndex > 0)
+            if (goalIndex <= goals.Count && goalIndex > 0)
             {
                 DataBase.DeleteGoal(ID, goalIndex - 1);
                 return "Цель удалена";

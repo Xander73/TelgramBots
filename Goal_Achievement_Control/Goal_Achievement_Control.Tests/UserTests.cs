@@ -38,7 +38,7 @@ namespace Goal_Achievement_Control.Tests
         [TestMethod]
         public void AddGoal_EmptyString_SpecialStringReturned()
         {
-            string execute = "Строка пустая. Цель не добавлена.";
+            string execute = "Строка пустая. Цель не добавлена";
             string actual = null;
 
             try

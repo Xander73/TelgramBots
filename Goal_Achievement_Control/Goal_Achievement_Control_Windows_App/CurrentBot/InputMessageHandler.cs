@@ -102,7 +102,6 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 user.Mode = OperatingMode.NON;
                 return user.DeleteGoal(Convert.ToInt32(text));
             }
-
             else if (user.Mode == OperatingMode.AddMark)
             {
                 return user.AddMarks(text);
