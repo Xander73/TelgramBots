@@ -74,7 +74,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
             else
             {
-                return "Строка пустая. Цель не добавлена.";
+                return "Строка пустая. Цель не добавлена";
             }
             
         }

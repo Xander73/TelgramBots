@@ -51,6 +51,8 @@ namespace Goal_Achievement_Control.Tests
 
             actual = imh.RateTypeMessage(new Telegram.Bot.Types.Message ());
 
+            db.ClearAllTables();
+
             Assert.AreEqual(execute, actual);
         }
 
@@ -62,6 +64,24 @@ namespace Goal_Achievement_Control.Tests
             var message = new Telegram.Bot.Types.Message();
             message.Text = "/command";
             actual = imh.RateTypeMessage(message);
+
+            db.ClearAllTables();
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void RateTypeMessage_EmptyString_stringReturned()
+        {
+            string execute = "Сообщение пустое";
+            string actual = "";
+
+            Telegram.Bot.Types.Message message = new Telegram.Bot.Types.Message();
+            message.Text = "";
+            InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.AddGoal));
+            actual = imh2.RateTypeMessage(message);
+
+            db.ClearAllTables();
 
             Assert.AreEqual(execute, actual);
         }
@@ -81,6 +101,8 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        
     }
     
 }

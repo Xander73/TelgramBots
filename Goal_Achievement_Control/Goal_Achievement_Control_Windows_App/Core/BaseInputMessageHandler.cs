@@ -16,6 +16,10 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             if (inputMessage.Type == Telegram.Bot.Types.Enums.MessageType.Text)
             {
                 string inputText = inputMessage.Text;   //чтобы не вызывать функцию несколько раз
+                if (string.IsNullOrWhiteSpace(inputText))
+                {
+                    return "Сообщение пустое";
+                }
                 if (inputText[0] == '/')
                 {                    
                     return CommandHandler(inputText); ;
