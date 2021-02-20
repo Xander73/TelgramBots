@@ -485,6 +485,23 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
+        public void ClearAllTables ()
+        {
+            using (var connected = new SQLiteConnection($"Data Source = {nameDataBase}"))
+            {
+                connected.Open();
+                using (var cmd = connected.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Users";
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = "DELETE FROM Goals";
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = "DELETE FROM Marks";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         #endregion
 
         void temp()

@@ -109,7 +109,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             }
 
             user.Mode = OperatingMode.NON;
-            return "Неизвестный тип сообщения.\nРежим работы переведен в начальный";
+            return "Неизвестный тип сообщения.\nРежим ввода цели отключен.";
         }
 
         public string ListGoalsToString()
@@ -121,9 +121,9 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 goals.Add(v);
             }
 
-            if (goals[0] == "Нет целей")
+            if (goals.Count == 0)
             {
-                return goals[0];
+                return "Нет целей";
             }
 
             for (int i = 0; i < goals.Count; ++i)

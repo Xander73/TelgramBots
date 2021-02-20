@@ -1,6 +1,7 @@
 ﻿using Goal_Achievement_Control_Windows_App.CurrentBot;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Goal_Achievement_Control_Windows_App.Core;
+using Goal_Achievement_Control.CurrentBot;
 
 namespace Goal_Achievement_Control.Tests
 {
@@ -8,7 +9,9 @@ namespace Goal_Achievement_Control.Tests
     public class InputMessageHandlerTests 
     {
         DataBase db = new DataBase("TestDB");
+        User user = new User(new DataBase("TestDB"), 1, new Telegram.Bot.Types.Message());
         InputMessageHandler imh = new InputMessageHandler(new User(new DataBase("TestDB"), 1, new Telegram.Bot.Types.Message()));
+
         [TestMethod]
         public void ListGoalsToString_nullGoals()
         {
@@ -57,8 +60,24 @@ namespace Goal_Achievement_Control.Tests
             string execute = "Неизвестная команда";
             string actual = "";
             var message = new Telegram.Bot.Types.Message();
-            message.Text = "/команда";
+            message.Text = "/command";
             actual = imh.RateTypeMessage(message);
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void CommandHandler_TestGoal_stringReturned()
+        {
+            string execute = "Цель добавлена";
+            string actual = "";
+
+            Telegram.Bot.Types.Message message = new Telegram.Bot.Types.Message();
+            message.Text = "Test Goal.";
+            InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.AddGoal));
+            actual = imh2.RateTypeMessage(message);
+
+            db.ClearAllTables();
 
             Assert.AreEqual(execute, actual);
         }
