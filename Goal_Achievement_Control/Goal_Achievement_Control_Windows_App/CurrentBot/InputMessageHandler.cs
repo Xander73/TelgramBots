@@ -27,13 +27,13 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                     } 
                     else
                     {
-                        return "Введено максиальное количество целей.\nДля удаления цели введите команду \"/Удалить цель.\"";
+                        return "Введено максиальное количество целей.\nДля удаления цели введите команду - \"/Удалить цель.\"";
                     }
                 }
                 else
                 {
                     user.Mode = OperatingMode.AddGoal;        //режим ввода целей
-                    return "Введите по одной цели./nРежим редактирования целей открыт.";                    
+                    return "Введите по порядук по одной цели. Должно быть от 3х до 15 целей.\nРежим редактирования целей открыт.";                    
                 }
             }
             else if (commandText.ToLower () == "/добавить цель")
@@ -41,7 +41,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 if (user.CountGoals() < 15)
                 {
                     user.Mode = OperatingMode.AddGoal;      //в следующем сообщении программа ожидает цель
-                    return "Режим редактирования целей открыт.";
+                    return "Режим редактирования целей открыт";
                 }    
                 else
                 {
@@ -122,7 +122,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
 
             if (goals.Count == 0)
             {
-                return "Нет целей";
+                return "Нет целей.";
             }
 
             for (int i = 0; i < goals.Count; ++i)

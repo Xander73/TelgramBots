@@ -259,6 +259,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         public string DeleteGoal(int userId, int goalIndex)
         {
+            int indexForList = goalIndex - 1;
             List<string> goals = new List<string>(GetGoals(userId).Values);
 
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
@@ -266,9 +267,9 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[goalIndex]}'";
+                    cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[indexForList]}'";
                     cmd.ExecuteNonQuery();
-                    return goals[goalIndex] + " удалена";
+                    return goals[indexForList] + " удалена";
                 }
             }
         }

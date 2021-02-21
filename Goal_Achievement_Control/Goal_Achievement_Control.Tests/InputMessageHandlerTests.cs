@@ -129,16 +129,16 @@ namespace Goal_Achievement_Control.Tests
         {
             string execute = "Цель удалена";
             string actual = "";
-
-            for (int i = 0; i < 2; ++i)
-            {
-                db.AddGoal($"TestGoal{i}", 1);
-            }
-
+            
             Telegram.Bot.Types.Message message = new Telegram.Bot.Types.Message();
             message.Text = "Test Goal.";
             try
             {
+                for (int i = 0; i < 2; ++i)
+                {
+                    db.AddGoal($"TestGoal{i}", 1);
+                }
+
                 InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.DeleteGoal));
                 actual = imh2.TextHandler("1");
             }
@@ -166,6 +166,24 @@ namespace Goal_Achievement_Control.Tests
                 }
                 InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message(), OperatingMode.AddMark));
                 actual = imh2.TextHandler("1");
+            }
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void CommandHandler_Command_впередAnd0Goals_stringReturned()
+        {
+            string execute = "Введите по порядук по одной цели. Должно быть от 3х до 15 целей.\nРежим редактирования целей открыт.";
+            string actual = "";
+
+            try
+            {                
+                actual = imh.CommandHandler("/Вперед");
             }
             finally
             {

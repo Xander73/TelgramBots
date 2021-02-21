@@ -84,7 +84,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
         {            
             if (goalIndex <= goals.Count && goalIndex > 0)
             {
-                DataBase.DeleteGoal(ID, goalIndex - 1);
+                DataBase.DeleteGoal(ID, goalIndex);
                 return "Цель удалена";
             }
             else
