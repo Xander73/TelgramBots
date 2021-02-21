@@ -215,6 +215,29 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void CommandHandler_Command_впередAnd4Goals_stringReturned()
+        {
+            string execute = "Вы уже начали путь к достижению цели. Необходимо минимум 3 цели.\nЧтобы добавить еще одну цель, введите команду \"/Добаить цель\".";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            try
+            {
+                for (int i = 0; i < MAX_GOALS; ++i)
+                {
+                    db.AddGoal($"{i + 1}Goal", 1);
+                }
+                actual = imh.CommandHandler("/Вперед");
+            }
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
     }
     
 }
