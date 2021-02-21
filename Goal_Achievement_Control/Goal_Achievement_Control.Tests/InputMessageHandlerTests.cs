@@ -192,6 +192,29 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void CommandHandler_Command_впередAnd15Goals_stringReturned()
+        {
+            string execute = "Введено максиальное количество целей.\nДля удаления цели введите команду - \"/Удалить цель\".";
+            string actual = "";
+            const int MAX_GOALS = 15;
+
+            try
+            {
+                for (int i = 0; i < MAX_GOALS; ++i)
+                {
+                    db.AddGoal($"{i+1}Goal", 1);
+                }
+                actual = imh.CommandHandler("/Вперед");
+            }
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
     }
     
 }
