@@ -244,9 +244,31 @@ namespace Goal_Achievement_Control.Tests
         {
             string execute = "Режим редактирования целей открыт.";
             string actual = "";
-            const int MAX_GOALS = 4;
 
             actual = imh.CommandHandler("/Добавить цель");
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void CommandHandler_Command_впередAndMaxGoals_stringReturned()
+        {
+            string execute = "Введено максиальное количество целей.\nДля удаления цели введите команду \"/Удалить цель\".";
+            string actual = "";
+            const int MAX_GOALS = 15;
+
+            try
+            {
+                for (int i = 0; i < MAX_GOALS; ++i)
+                {
+                    db.AddGoal($"{i + 1}Goal", 1);
+                }
+                actual = imh.CommandHandler("/Добавить цель");
+            }
+            finally
+            {
+                db.ClearAllTables();
+            }
 
             Assert.AreEqual(execute, actual);
         }
