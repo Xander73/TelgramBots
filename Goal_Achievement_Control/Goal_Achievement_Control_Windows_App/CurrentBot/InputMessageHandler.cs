@@ -41,7 +41,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                 if (user.CountGoals() < 15)
                 {
                     user.Mode = OperatingMode.AddGoal;      //в следующем сообщении программа ожидает цель
-                    return "Режим редактирования целей открыт";
+                    return "Режим редактирования целей открыт.";
                 }    
                 else
                 {

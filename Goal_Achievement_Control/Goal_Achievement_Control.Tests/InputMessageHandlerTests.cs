@@ -16,7 +16,7 @@ namespace Goal_Achievement_Control.Tests
         [TestMethod]
         public void ListGoalsToString_nullGoals()
         {
-            string execute = "Нет целей";
+            string execute = "Нет целей.";
             string actual = "";
 
             actual = imh.ListGoalsToString();
@@ -194,7 +194,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void CommandHandler_Command_впередAnd15Goals_stringReturned()
+        public void CommandHandler_Command_впередAndMAXGoals_stringReturned()
         {
             string execute = "Введено максиальное количество целей.\nДля удаления цели введите команду - \"/Удалить цель\".";
             string actual = "";
@@ -235,6 +235,18 @@ namespace Goal_Achievement_Control.Tests
             {
                 db.ClearAllTables();
             }
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void CommandHandler_Command_ДобавитьЦельAnd0Goals_stringReturned()
+        {
+            string execute = "Режим редактирования целей открыт.";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            actual = imh.CommandHandler("/Добавить цель");
 
             Assert.AreEqual(execute, actual);
         }
