@@ -314,6 +314,33 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void CommandHandler_Command_ввестиОценкиAnd4Goals_stringReturned()
+        {
+            string execute = "";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            try
+            {
+                for (int i = 0; i < MAX_GOALS; ++i)
+                {
+                    db.AddGoal($"{i + 1}Goal", 1);
+                }
+                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message()));
+                execute = $"Режим ввода оценок открыт.\n{imh2.ListGoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10.";
+                actual = imh.CommandHandler("/ввести оценки");
+            }
+
+
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
     }
     
 }

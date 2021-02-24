@@ -65,7 +65,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             else if (commandText.ToLower() == "/ввести оценки")
             {
                 user.Mode = OperatingMode.AddMark;
-                return $"Режим ввода оценок открыт.\n{ListGoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10";
+                return $"Режим ввода оценок открыт.\n{ListGoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10.";
             }
             else if (commandText.ToLower() == "/статистика за 4 недели")
             {
