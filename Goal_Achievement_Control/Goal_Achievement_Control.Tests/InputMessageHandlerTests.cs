@@ -251,24 +251,12 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void CommandHandler_Command_впередAndMaxGoals_stringReturned()
+        public void CommandHandler_Command_ОстановитьВводЦелейAndMaxGoals_stringReturned()
         {
-            string execute = "Введено максиальное количество целей.\nДля удаления цели введите команду \"/Удалить цель\".";
+            string execute = "Режим редактирования целей закрыт.";
             string actual = "";
-            const int MAX_GOALS = 15;
 
-            try
-            {
-                for (int i = 0; i < MAX_GOALS; ++i)
-                {
-                    db.AddGoal($"{i + 1}Goal", 1);
-                }
-                actual = imh.CommandHandler("/Добавить цель");
-            }
-            finally
-            {
-                db.ClearAllTables();
-            }
+            actual = imh.CommandHandler("/остановить ввод целей");
 
             Assert.AreEqual(execute, actual);
         }
