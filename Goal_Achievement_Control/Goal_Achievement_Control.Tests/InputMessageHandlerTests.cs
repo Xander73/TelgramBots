@@ -287,6 +287,33 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void CommandHandler_Command_целиAnd4Goals_stringReturned()
+        {
+            string execute = "";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            try
+            {
+                for (int i = 0; i < MAX_GOALS; ++i)
+                {
+                    db.AddGoal($"{i + 1}Goal", 1);
+                }
+                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message()));
+                execute = imh2.ListGoalsToString();
+                actual = imh.CommandHandler("/цели");
+            }
+
+
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
     }
     
 }
