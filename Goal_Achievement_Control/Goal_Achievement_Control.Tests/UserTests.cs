@@ -176,5 +176,18 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void AddOperatingMode_Add_Addreturned()
+        {
+            OperatingMode execute = OperatingMode.AddGoal;
+            OperatingMode actual = default;
+
+            user.AddOperatingMode(OperatingMode.AddGoal);
+
+            actual = user.Mode;
+
+            Assert.AreEqual(execute, actual);
+        }
     }    
 }

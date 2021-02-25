@@ -191,6 +191,25 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
+        public void AddOperatingMode_OperatingModeAddGoal_AddGoalReturned()
+        {
+            OperatingMode execute = OperatingMode.AddGoal;
+            OperatingMode actual = default;
+
+            try
+            {
+                db.AddUser("1", "1", OperatingMode.NON); 
+                actual = db.AddOperatingMode(1, OperatingMode.AddGoal);
+            }
+            finally
+            {
+                db.ClearTable("Users");
+            }
+
+            
+        }
+
+        [TestMethod]
         public void GetUserMod_NON_NONReturned()
         {
             OperatingMode execute = OperatingMode.NON;

@@ -17,7 +17,14 @@ namespace Goal_Achievement_Control_Windows_App.Core
 {
     public class User : IUser
     {
-        public OperatingMode Mode { get; set; }
+        private OperatingMode mode;
+        public OperatingMode Mode { 
+            get => mode;
+            set
+            { 
+               mode = AddOperatingMode(value); 
+            }
+        }
         private Telegram.Bot.Types.Message message;
         public Telegram.Bot.Types.Message Message
         {
@@ -94,10 +101,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             
         }
 
-        public int CountGoals ()
-        {
-            return DataBase.CountGoals(ID);  
-        }
+        public int CountGoals () => DataBase.CountGoals(ID);
 
         public string AddMarks (string newMarks)
         {
@@ -125,5 +129,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             dataBase.ChangeOperatingMode(ID, OperatingMode.NON);
             return "Оценки добавлены";
         }
+
+        public OperatingMode AddOperatingMode (OperatingMode om) => dataBase.AddOperatingMode(ID, om);
     }
 }

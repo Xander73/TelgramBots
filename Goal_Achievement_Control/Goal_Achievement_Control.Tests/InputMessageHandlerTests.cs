@@ -251,7 +251,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void CommandHandler_Command_jстановитьВводЦелейAndMaxGoals_stringReturned()
+        public void CommandHandler_Command_установитьВводЦелейAndMaxGoals_stringReturned()
         {
             string execute = "Режим редактирования целей закрыт.";
             string actual = "";

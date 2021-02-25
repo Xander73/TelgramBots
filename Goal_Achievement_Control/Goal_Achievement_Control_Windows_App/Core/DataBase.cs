@@ -110,6 +110,20 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
 
+        public OperatingMode AddOperatingMode (int idUser, OperatingMode om)
+        {
+            using (var connected = new SQLiteConnection($"Data Source = {nameDataBase}"))
+            {
+                connected.Open();
+                using (var cmd = connected.CreateCommand())
+                {
+                    cmd.CommandText = $"UPDATE Users SET operatingMode = '{om.ToString()}' WHERE id == {idUser}";
+                    cmd.ExecuteNonQuery();
+                }
+                return om;
+            }
+        }
+
         public OperatingMode GetUserMod(int id)
         {
             using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
