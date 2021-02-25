@@ -22,29 +22,29 @@ namespace Goal_Achievement_Control_Windows_App.Core
             this.nameDataBase = nameDataBase + ".db";
             if (!File.Exists(this.nameDataBase))
             {
-                SQLiteConnection.CreateFile(this.nameDataBase);
+                SQLiteConnection.CreateFile(this.nameDataBase);                
+            }
 
-                AddTable("Users",
-                                @"[id] integer not null primary key autoincrement,
+            AddTable("Users",
+                @"[id] integer not null primary key autoincrement,
                 [telegramId] nvarchar(50) not null,
                 [chatId] nvarchar(50) not null,
                 [operatingMode] nvarchar(50) not null"
                                     );
 
-                AddTable("Goals",
-                    @"[id] integer not null primary key autoincrement,
+            AddTable("Goals",
+                @"[id] integer not null primary key autoincrement,
                 [Goal] nvarchar(250) null,
                 [userId] integer not null,
                 [isMarked] bool not null"
-                        );
+                    );
 
-                AddTable("Marks",
-                    @"[id] integer not null primary key autoincrement,
+            AddTable("Marks",
+                @"[id] integer not null primary key autoincrement,
                   [Date] nvarchar(15) not null,
                   [mark] nvarchar(3) null,
                   [goal_id] integer not null"
-                        );
-            }
+                    );
         }
 
 

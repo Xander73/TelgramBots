@@ -22,7 +22,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             get => mode;
             set
             { 
-               mode = AddOperatingMode(value); 
+                mode = AddOperatingMode(value);
             }
         }
         private Telegram.Bot.Types.Message message;
@@ -52,10 +52,10 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
 
         public User(DataBase db, int idCurrentUser, Telegram.Bot.Types.Message mes, OperatingMode mode = OperatingMode.NON)
-        {
-            Mode = mode;
+        {            
             messageHandler = new InputMessageHandler(this);
             dataBase = db;
+            Mode = mode;
             ID = idCurrentUser; //ID в базе данных
             message = mes;  //не используется свойство, т.к. оно начинает автоматически обрабатывать входящий текст
             goals = dataBase.GetGoals(ID);
@@ -130,6 +130,6 @@ namespace Goal_Achievement_Control_Windows_App.Core
             return "Оценки добавлены";
         }
 
-        public OperatingMode AddOperatingMode (OperatingMode om) => dataBase.AddOperatingMode(ID, om);
+        private OperatingMode AddOperatingMode (OperatingMode om) => dataBase.AddOperatingMode(ID, om);
     }
 }
