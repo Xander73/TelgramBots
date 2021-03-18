@@ -12,7 +12,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
         public InputMessageHandler(User user)
         {
             this.user = user;
-        }
+         }
 
         public override string CommandHandler(string commandText)
         {
@@ -69,7 +69,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             }
             else if (commandText.ToLower() == "/статистика за 4 недели")
             {
-                return user.DataBase.MarksLastFourWeeks(user.ID);
+                return user.GetMarks4Weaks();
             }
             else if (commandText.ToLower() == "/статистика")
             {

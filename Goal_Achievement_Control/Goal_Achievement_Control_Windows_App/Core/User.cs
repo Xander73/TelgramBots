@@ -47,7 +47,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
             get => id;
             set => id = value;
         }
-        public InputMessageHandler messageHandler;
+        public InputMessageHandler messageHandler;  
 
 
 
@@ -131,5 +131,9 @@ namespace Goal_Achievement_Control_Windows_App.Core
         }
 
         private OperatingMode AddOperatingMode (OperatingMode om) => dataBase.AddOperatingMode(ID, om);
+
+        public string GetMarks4Weaks() => dataBase.MarksLastFourWeeks(ID);
+
+        public string GetAllMarks() => dataBase.MarksAll(ID);
     }
 }

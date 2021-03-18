@@ -353,7 +353,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             }
                         }                                                
                     }
-                    return resultate;
+                    return resultate == null ? "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет." : resultate;
                 }
             }
         }

@@ -59,7 +59,7 @@ namespace Goal_Achievement_Control.CurrentBot
                         }
                         else
                         {
-                            User user = new User(dataBase, idCurrentUser, message);
+                            User user = new User(dataBase, idCurrentUser, message, dataBase.GetUserMod(idCurrentUser));
                             await Bot.SendTextMessageAsync(message.Chat.Id, (user.Message = message).Text);
                         }
                         {

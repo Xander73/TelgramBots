@@ -341,6 +341,18 @@ namespace Goal_Achievement_Control.Tests
 
             Assert.AreEqual(execute, actual);
         }
+
+        [TestMethod]
+        public void CommandHandler_Command_СтатистикаЗа4НеделиAnd0Goals_stringReturned()
+        {
+            string execute = "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет.";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            actual = imh.CommandHandler("/Статистика за 4 недели");
+
+            Assert.AreEqual(execute, actual);
+        }
     }
     
 }

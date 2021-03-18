@@ -178,7 +178,7 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void AddOperatingMode_Add_Addreturned()
+        public void AddOperatingMode_AddGoal_AddGoalReturned()
         {
             OperatingMode execute = OperatingMode.AddGoal;
             OperatingMode actual = default;
