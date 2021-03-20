@@ -36,53 +36,51 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
                     return "Введите по порядук по одной цели. Должно быть от 3х до 15 целей.\nРежим редактирования целей открыт.";                    
                 }
             }
-            else if (commandText.ToLower () == "/добавить цель")
+            return "Неизвестная команда.";
+        }
+
+        public override string TextHandler(string text)
+        {
+            if (text == "Добавить цель")
             {
                 if (user.CountGoals() < 15)
                 {
                     user.Mode = OperatingMode.AddGoal;      //в следующем сообщении программа ожидает цель
                     return "Режим редактирования целей открыт.";
-                }    
+                }
                 else
                 {
                     return "Введено максиальное количество целей.\nДля удаления цели введите команду \"/Удалить цель\".";
                 }
             }
-            else if (commandText.ToLower () == "/остановить ввод целей")
+            else if (text == "Остановить ввод целей")
             {
                 user.Mode = OperatingMode.NON;    //OperatingMode.NON - нет режима работы бота
                 return "Режим редактирования целей закрыт.";
             }
-            else if (commandText.ToLower() == "/удалить")
+            else if (text == "Удалить цель")
             {
                 user.Mode = OperatingMode.DeleteGoal;
                 return $"Режим удаления целей открыт.\n{ListGoalsToString()}\nВведите номер цели, которую требуется удалить.";
             }
-            else if (commandText.ToLower() == "/цели")  //вывести список целей
-            {                
+            else if (text == "Список целей")  //вывести список целей
+            {
                 return ListGoalsToString();
             }
-            else if (commandText.ToLower() == "/ввести оценки")
+            else if (text == "Ввести оценки")
             {
                 user.Mode = OperatingMode.AddMark;
                 return $"Режим ввода оценок открыт.\n{ListGoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10.";
             }
-            else if (commandText.ToLower() == "/статистика за 4 недели")
+            else if (text == "Статистика за 4 недели")
             {
                 return user.GetMarks4Weaks();
             }
-            else if (commandText.ToLower() == "/статистика")
+            else if (text == "Вся статистика")
             {
                 return user.DataBase.MarksAll(user.ID);
             }
-            else 
-            {
-                return "Неизвестная команда";
-            }
-        }
 
-        public override string TextHandler(string text)
-        {
             if (user.Mode == OperatingMode.AddGoal)
             {
                 int countGoals = user.CountGoals();
@@ -106,9 +104,8 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
             {
                 return user.AddMarks(text);
             }
-
             user.Mode = OperatingMode.NON;
-            return "Неизвестный тип сообщения.\nРежим ввода цели отключен.";
+            return "Неизвестный тип сообщения.";
         }
 
         public string ListGoalsToString()

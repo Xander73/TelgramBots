@@ -478,7 +478,7 @@ $"Month - {DateTime.Now.ToString("MMM", CultureInfo.CurrentCulture)}:  1\n";
             try
             {
                 db.AddUser("1", "1", OperatingMode.NON);
-                db.AddGoal("TestGoal", 1); ;
+                db.AddGoal("TestGoal", 1); 
 
                 for (int i = 1; i <= 40; ++i)
                 {

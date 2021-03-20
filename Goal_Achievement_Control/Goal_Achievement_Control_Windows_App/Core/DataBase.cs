@@ -150,6 +150,8 @@ namespace Goal_Achievement_Control_Windows_App.Core
                                 {
                                     return OperatingMode.DeleteGoal;
                                 }
+                            case "AddMark":
+                                return OperatingMode.AddMark;
                             default:
                                 return OperatingMode.Error;
                         }
@@ -389,6 +391,8 @@ namespace Goal_Achievement_Control_Windows_App.Core
                             }
                         }
 
+                        if (dateMarksAll.Count == 0)
+                            return "оценок нет.";
                         string tempAVGMarkWeekly = "";
                         foreach (var v in CalculatingAVGMarkWeekly(dateMarksAll))
                         {
@@ -400,10 +404,11 @@ namespace Goal_Achievement_Control_Windows_App.Core
                         {
                             tempAVGMarkMonthly += v.First + v.Second.ToString() + '\n';
                         }
+                        dateMarksAll.Clear();
 
                         resultate += tempResultate + tempAVGMarkWeekly +
                             "______________________________________________\n\n" +
-                            tempAVGMarkMonthly;
+                            tempAVGMarkMonthly + '\n';
                     }                        
                     return resultate;
                 }
@@ -461,10 +466,16 @@ namespace Goal_Achievement_Control_Windows_App.Core
 
         private List<Pair<string, double>> CalculatingAVGMarkMonthly(List<Pair<DateTime, int>> datesMarks)
         {
+            if (datesMarks.Count == 0)
+                return null;
+
             List<Pair<string, double>> resultateAVGMarks = new List<Pair<string, double>>();
-            DateTime monthDayFirst =new DateTime(datesMarks[0].First.Year, datesMarks[0].First.Month, 1);
+         //   DateTime monthDayFirst =new DateTime(datesMarks[0].First.Year, datesMarks[0].First.Month, 1);
             int indexFirstDay = 0;
             DateTime monthDayLast = (datesMarks[0].First.AddMonths(1).AddDays(-1) < datesMarks[datesMarks.Count - 1].First) ? datesMarks[0].First.AddMonths(1).AddDays(-1) : datesMarks[datesMarks.Count - 1].First; ;
+
+            if (monthDayLast == null)
+                return null;
 
             if (datesMarks.Count == 0)
             {
@@ -481,7 +492,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
                 }
                 else if ((i + 1) == datesMarks.Count)
                 {
-                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.ToString("MMM", CultureInfo.CurrentCulture)}:  ", CalculatingAVGMark(datesMarks.GetRange(i - (i - indexFirstDay), i - indexFirstDay+1))));
+                    resultateAVGMarks.Add(new Pair<string, double>($"Month - {datesMarks[i].First.ToString("MMMM", CultureInfo.CurrentCulture)}:  ", CalculatingAVGMark(datesMarks.GetRange(i - (i - indexFirstDay), i - indexFirstDay+1))));
                 }
             }
             return resultateAVGMarks;
