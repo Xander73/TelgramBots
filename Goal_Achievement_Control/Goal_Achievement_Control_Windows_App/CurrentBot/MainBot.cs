@@ -53,14 +53,14 @@ namespace Goal_Achievement_Control.CurrentBot
                         //}    
 
                         if (idCurrentUser == 0)       //если ID не найден, то создаем и добавляем нового клиента и присваиваем ему индек последнего объекта
-                        {
+                        {                            
                             dataBase.AddUser(message.From.Id.ToString(), message.Chat.Id.ToString(), OperatingMode.AddGoal);  //add new user    
-                            await Bot.SendTextMessageAsync(message.Chat.Id, "Приветствуем Вас.\nВведите от 3 до 15 целей, которые необходимо достичь.");
+                            await Bot.SendTextMessageAsync(message.Chat.Id, "Приветствуем Вас.\nВведите от 3 до 15 целей, которые необходимо достичь.", replyMarkup: KeyBoard());
                         }
                         else
                         {
-                            User user = new User(dataBase, idCurrentUser, message, dataBase.GetUserMod(idCurrentUser));
-                            await Bot.SendTextMessageAsync(message.Chat.Id, (user.Message = message).Text);
+                            User user = new User(dataBase, idCurrentUser, message, dataBase.GetUserMod(idCurrentUser));                            
+                            await Bot.SendTextMessageAsync(message.Chat.Id, (user.Message = message).Text, replyMarkup: KeyBoard());
                         }
                         {
                             //clients[indexCurrentClient].Message = message;  //передавем значение и в свойстве запускаем обработчик сообщений
@@ -165,6 +165,29 @@ namespace Goal_Achievement_Control.CurrentBot
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup KeyBoard ()
+        {
+            return new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(new[]
+                            {
+                                new []
+                                {
+                                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Добавить цель"), new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Остановить ввод целей")
+                                },
+                                new []
+                                {
+                                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Удалить цель"), new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Список целей")
+                                }, 
+                                new []
+                                {
+                                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Статистика за 4 недели"), new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Вся статистика")
+                                },
+                                new []
+                                {
+                                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Ввести оценки")
+                                }
+                            }, false, true);
         }
 
         private async void TimerAsync()

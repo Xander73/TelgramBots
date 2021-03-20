@@ -70,7 +70,7 @@ namespace Telegram_Bot_Omar_Khayyam.Bot
                             }
                             if (message.Text == "/rbuttons" || message.Text == "/to_shake" || message.Text == "Встряхнуть!")
                             {
-                                var keyBoard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup (new[] { new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Встряхнуть!") }, true, true);
+                                var keyBoard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup (new[] { new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Встряхнуть!") }, true, false);
                                 await Bot.SendTextMessageAsync(message.Chat.Id, processingAndReturnReply(), Telegram.Bot.Types.Enums.ParseMode.Default, false, false, 0, keyBoard);
                             }
                         }
