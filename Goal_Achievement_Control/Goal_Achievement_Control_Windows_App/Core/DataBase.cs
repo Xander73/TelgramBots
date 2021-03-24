@@ -363,10 +363,7 @@ namespace Goal_Achievement_Control_Windows_App.Core
         public string MarksAll(int userId)
         {
             Dictionary<int, string> goalsCurentUser = GetGoals(userId);
-            List<Pair<DateTime, int>> dateMarksWeek = new List<Pair<DateTime, int>>();
-            List<Pair<string, double>> AVGMarksWeeks = new List<Pair<string, double>>();
             List<Pair<DateTime, int>> dateMarksAll = new List<Pair<DateTime, int>>();
-            List<Pair<string, double>> AVGMarksMonths = new List<Pair<string, double>>();
             string resultate = null;
 
             using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))

@@ -472,7 +472,7 @@ $"Week from {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateStrin
 $"Week from {DateTime.Now.ToShortDateString()} to {DateTime.Now.ToShortDateString()}: 1\n" +
 "______________________________________________\n\n" +
 
-$"Month - {DateTime.Now.ToString("MMM", CultureInfo.CurrentCulture)}:  1\n";
+$"Month - {DateTime.Now.ToString("MMMM", CultureInfo.CurrentCulture)}:  1\n\n";
             string actual = "";
 
             try
