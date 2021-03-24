@@ -60,7 +60,7 @@ namespace Goal_Achievement_Control.Tests
         [TestMethod]
         public void RateTypeMessage_UnnownCommand()
         {
-            string execute = "Неизвестная команда";
+            string execute = "Неизвестная команда.";
             string actual = "";
             var message = new Telegram.Bot.Types.Message();
             message.Text = "/command";
@@ -176,6 +176,109 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
+        public void TextHandler_Command_целиAnd4Goals_stringReturned()
+        {
+            string execute = "";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            try
+            {
+                for (int i = 0; i < MAX_GOALS; ++i)
+                {
+                    db.AddGoal($"{i + 1}Goal", 1);
+                }
+                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message()));
+                execute = imh2.ListGoalsToString();
+                actual = imh.TextHandler("Список целей");
+            }
+
+
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void TextHandler_Command_ДобавитьЦельAnd0Goals_stringReturned()
+        {
+            string execute = "Режим редактирования целей открыт.";
+            string actual = "";
+
+            actual = imh.TextHandler("Добавить цель");
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void TextHandler_Command_удалитьAnd4Goals_stringReturned()
+        {
+            string execute = "";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            try
+            {
+                for (int i = 0; i < MAX_GOALS; ++i)
+                {
+                    db.AddGoal($"{i + 1}Goal", 1);
+                }
+                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message()));
+                execute = $"Режим удаления целей открыт.\n{imh2.ListGoalsToString()}\nВведите номер цели, которую требуется удалить.";
+                actual = imh.TextHandler("Удалить цель");
+            }
+
+
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void TextHandler_СтатистикаЗа4НеделиAnd0Goals_stringReturned()
+        {
+            string execute = "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет.";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            actual = imh.TextHandler("Статистика за 4 недели");
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
+        public void TextHandler_Command_ввестиОценкиAnd4Goals_stringReturned()
+        {
+            string execute = "";
+            string actual = "";
+            const int MAX_GOALS = 4;
+
+            try
+            {
+                for (int i = 0; i < MAX_GOALS; ++i)
+                {
+                    db.AddGoal($"{i + 1}Goal", 1);
+                }
+                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message()));
+                execute = $"Режим ввода оценок открыт.\n{imh2.ListGoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10.";
+                actual = imh.TextHandler("Ввести оценки");
+            }
+
+            finally
+            {
+                db.ClearAllTables();
+            }
+
+            Assert.AreEqual(execute, actual);
+        }
+
+        [TestMethod]
         public void CommandHandler_Command_впередAnd0Goals_stringReturned()
         {
             string execute = "Введите по порядук по одной цели. Должно быть от 3х до 15 целей.\nРежим редактирования целей открыт.";
@@ -240,119 +343,19 @@ namespace Goal_Achievement_Control.Tests
         }
 
         [TestMethod]
-        public void CommandHandler_Command_ДобавитьЦельAnd0Goals_stringReturned()
-        {
-            string execute = "Режим редактирования целей открыт.";
-            string actual = "";
-
-            actual = imh.CommandHandler("/Добавить цель");
-
-            Assert.AreEqual(execute, actual);
-        }
-
-        [TestMethod]
         public void CommandHandler_Command_установитьВводЦелейAndMaxGoals_stringReturned()
         {
             string execute = "Режим редактирования целей закрыт.";
             string actual = "";
 
-            actual = imh.CommandHandler("/остановить ввод целей");
+            actual = imh.TextHandler("Остановить ввод целей");
 
             Assert.AreEqual(execute, actual);
         }
+         
+        
 
-        [TestMethod]
-        public void CommandHandler_Command_удалитьAnd4Goals_stringReturned()
-        {
-            string execute = "";
-            string actual = "";
-            const int MAX_GOALS = 4;
-
-            try
-            {
-                for (int i = 0; i < MAX_GOALS; ++i)
-                {
-                    db.AddGoal($"{i + 1}Goal", 1);
-                }
-                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message()));
-                execute = $"Режим удаления целей открыт.\n{imh2.ListGoalsToString()}\nВведите номер цели, которую требуется удалить.";
-                actual = imh.CommandHandler("/удалить");
-            }
-
-
-            finally
-            {
-                db.ClearAllTables();
-            }
-
-            Assert.AreEqual(execute, actual);
-        }
-
-        [TestMethod]
-        public void CommandHandler_Command_целиAnd4Goals_stringReturned()
-        {
-            string execute = "";
-            string actual = "";
-            const int MAX_GOALS = 4;
-
-            try
-            {
-                for (int i = 0; i < MAX_GOALS; ++i)
-                {
-                    db.AddGoal($"{i + 1}Goal", 1);
-                }
-                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message()));
-                execute = imh2.ListGoalsToString();
-                actual = imh.CommandHandler("/цели");
-            }
-
-
-            finally
-            {
-                db.ClearAllTables();
-            }
-
-            Assert.AreEqual(execute, actual);
-        }
-
-        [TestMethod]
-        public void CommandHandler_Command_ввестиОценкиAnd4Goals_stringReturned()
-        {
-            string execute = "";
-            string actual = "";
-            const int MAX_GOALS = 4;
-
-            try
-            {
-                for (int i = 0; i < MAX_GOALS; ++i)
-                {
-                    db.AddGoal($"{i + 1}Goal", 1);
-                }
-                InputMessageHandler imh2 = new InputMessageHandler(new User(db, 1, new Telegram.Bot.Types.Message()));
-                execute = $"Режим ввода оценок открыт.\n{imh2.ListGoalsToString()}\nВведите через запятую оценки для каждой цели по порядку. Оценки должны быть от 0 до 10.";
-                actual = imh.CommandHandler("/ввести оценки");
-            }
-
-
-            finally
-            {
-                db.ClearAllTables();
-            }
-
-            Assert.AreEqual(execute, actual);
-        }
-
-        [TestMethod]
-        public void CommandHandler_Command_СтатистикаЗа4НеделиAnd0Goals_stringReturned()
-        {
-            string execute = "Average weekly score:\nВы недавно начали движение к цели.\nОценок нет.";
-            string actual = "";
-            const int MAX_GOALS = 4;
-
-            actual = imh.CommandHandler("/Статистика за 4 недели");
-
-            Assert.AreEqual(execute, actual);
-        }
+        
     }
     
 }
