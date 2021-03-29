@@ -1,7 +1,6 @@
 ﻿using Goal_Achievement_Control_Windows_App.CurrentBot;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Goal_Achievement_Control_Windows_App.Core;
-using Goal_Achievement_Control.CurrentBot;
 using System.Collections.Generic;
 
 namespace Goal_Achievement_Control.Tests

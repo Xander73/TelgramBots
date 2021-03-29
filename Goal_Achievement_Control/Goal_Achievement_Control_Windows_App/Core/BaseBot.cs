@@ -4,7 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Security.Principal;
 
-namespace Goal_Achievement_Control.BaseBot
+namespace Goal_Achievement_Control_Windows_App.Core
 {
     abstract class BaseBot
     {

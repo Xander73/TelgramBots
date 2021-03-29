@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Goal_Achievement_Control_Windows_App.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Goal_Achievement_Control_Windows_App.CurrentBot
     //{
     //    Command, Text, NONE
     //}
-    public abstract class BaseInputMessageHandler
+    public abstract class BaseInputMessageHandler : IInputMessageHandler
     {
         public string RateTypeMessage (Telegram.Bot.Types.Message inputMessage)
         {

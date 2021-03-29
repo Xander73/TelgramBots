@@ -2,15 +2,8 @@
  * Класс содержит список целей, ID клиента, последнее сообщение и обработчик сообщений.
  * */
 
-using System;
 using System.Collections.Generic;
 using Goal_Achievement_Control_Windows_App.CurrentBot;
-using System.Text;
-using Goal_Achievement_Control_Windows_App.Core;
-using Goal_Achievement_Control.CurrentBot;
-using System.Data.SQLite;
-using System.Data;
-using System.Security.Principal;
 using Goal_Achievement_Control_Windows_App.Interfaces;
 
 namespace Goal_Achievement_Control_Windows_App.Core 
@@ -26,18 +19,26 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }
         private Telegram.Bot.Types.Message message;
+
+        /// <summary>
+        /// set is:
+        /// 1) set value to message 
+        /// 2) send message to messageHandler.RateTypeMessage(Message)
+        /// 3) get text from messageHandler.RateTypeMessage(Message)
+        /// </summary>
+
         public Telegram.Bot.Types.Message Message
         {
             get => message;
-            set     //устанавливает значение message, обрабатывает входящее сообщение и присвает результат для дальнейшего вывода в сообщении пользователю.
+            set     
             {
-                message = value;
+                //message = value;
                 message.Text = messageHandler.RateTypeMessage(Message);
             }
         }
         private Dictionary<int, string> goals;  
-        private DataBase dataBase;
-        public DataBase DataBase
+        private IDataBase dataBase;
+        public IDataBase DataBase
         {
             get => dataBase;
         }
@@ -47,11 +48,11 @@ namespace Goal_Achievement_Control_Windows_App.Core
             get => id;
             set => id = value;
         }
-        public InputMessageHandler messageHandler;  
+        public IInputMessageHandler messageHandler;  
 
 
 
-        public User(DataBase db, int idCurrentUser, Telegram.Bot.Types.Message mes, OperatingMode mode = OperatingMode.NON)
+        public User(IDataBase db, int idCurrentUser, Telegram.Bot.Types.Message mes, OperatingMode mode = OperatingMode.NON)
         {            
             messageHandler = new InputMessageHandler(this);
             dataBase = db;

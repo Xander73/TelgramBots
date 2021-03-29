@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Goal_Achievement_Control_Windows_App.CurrentBot;
 using System.Collections.Generic;
-using System.Text;
-using Goal_Achievement_Control.CurrentBot;
-using Goal_Achievement_Control_Windows_App.Core;
 
 namespace Goal_Achievement_Control_Windows_App.Interfaces
 {
-    interface IDataBase
+    public interface IDataBase
     {
+        string NameDataBase { get; }
+
         void AddData(string nameTable, string data);
 
         void AddUser(string telegramId, string cahtId, OperatingMode mode);
@@ -31,5 +30,11 @@ namespace Goal_Achievement_Control_Windows_App.Interfaces
         string MarksLastFourWeeks(int userId);
 
         string MarksAll(int userId);
+
+        OperatingMode GetUserMod(int id);
+
+        int CountGoals(int userId);
+
+        OperatingMode AddOperatingMode(int idUser, OperatingMode om);
     }
 }

@@ -1,10 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Goal_Achievement_Control_Windows_App.Core;
-using Goal_Achievement_Control.CurrentBot;
 using System.Data.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Goal_Achievement_Control_Windows_App.CurrentBot;
 
 namespace Goal_Achievement_Control.Tests
 {

@@ -4,8 +4,10 @@ using System.Text;
 
 namespace Goal_Achievement_Control_Windows_App.Interfaces
 {
-    interface IUser
+    public interface IUser
     {
+        Telegram.Bot.Types.Message Message { get; set; }
+        IDataBase DataBase { get; }
         string GoalsToString();
 
         string AddGoal(string goal);
