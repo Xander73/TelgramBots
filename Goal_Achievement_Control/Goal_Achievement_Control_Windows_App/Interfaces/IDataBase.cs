@@ -6,9 +6,7 @@ namespace Goal_Achievement_Control_Windows_App.Interfaces
     public interface IDataBase
     {
         string NameDataBase { get; }
-
-        void AddData(string nameTable, string data);
-
+                
         void AddUser(string telegramId, string cahtId, OperatingMode mode);
 
         void AddGoal(string goal, int userId);
@@ -17,9 +15,9 @@ namespace Goal_Achievement_Control_Windows_App.Interfaces
 
         int NextId(string nameTable);
 
-        int IdCurrentUser(int telegramId);              
+        int IdCurrentUser(int telegramId);
 
-        void ChangeOperatingMode(int userId, OperatingMode mode);
+        OperatingMode ChangeOperatingMode(int userId, OperatingMode mode);
 
         Dictionary<string, string> GetTelegramIdUsers();
 
@@ -35,6 +33,6 @@ namespace Goal_Achievement_Control_Windows_App.Interfaces
 
         int CountGoals(int userId);
 
-        OperatingMode AddOperatingMode(int idUser, OperatingMode om);
+        OperatingMode ChangeOperatingMode(int idUser, OperatingMode om);
     }
 }

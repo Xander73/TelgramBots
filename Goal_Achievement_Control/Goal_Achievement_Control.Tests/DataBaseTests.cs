@@ -199,7 +199,7 @@ namespace Goal_Achievement_Control.Tests
             try
             {
                 db.AddUser("1", "1", OperatingMode.NON); 
-                actual = db.AddOperatingMode(1, OperatingMode.AddGoal);
+                actual = db.ChangeOperatingMode(1, OperatingMode.AddGoal);
             }
             finally
             {

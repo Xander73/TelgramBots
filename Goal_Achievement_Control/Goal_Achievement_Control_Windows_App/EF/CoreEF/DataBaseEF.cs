@@ -6,159 +6,78 @@ using Goal_Achievement_Control_Windows_App.Interfaces;
 using System.Globalization;
 using System.Data;
 using Goal_Achievement_Control_Windows_App.CurrentBot;
+using Goal_Achievement_Control_Windows_App.EF.Context;
+using Goal_Achievement_Control_Windows_App.EF.Models;
+using System.Linq;
 
-namespace Goal_Achievement_Control_Windows_App.Core
+namespace Goal_Achievement_Control_Windows_App.EF.CoreEF
 {
-    public class DataBase : IDataBase
+    public class DataBaseEF : IDataBase
     {
         private string nameDataBase;
+        private myDBContext dbContext;
         public string NameDataBase { get => nameDataBase; }
 
-
-
-        public DataBase(string nameDataBase)
+        public DataBaseEF(myDBContext dbContext)
         {
-            this.nameDataBase = nameDataBase + ".db";
-            if (!File.Exists(this.nameDataBase))
-            {
-                SQLiteConnection.CreateFile(this.nameDataBase);                
-            }
-
-            AddTable("Users",
-                @"[id] integer not null primary key autoincrement,
-                [telegramId] nvarchar(50) not null,
-                [chatId] nvarchar(50) not null,
-                [operatingMode] nvarchar(50) not null"
-                                    );
-
-            AddTable("Goals",
-                @"[id] integer not null primary key autoincrement,
-                [Goal] nvarchar(250) null,
-                [userId] integer not null,
-                [isMarked] bool not null"
-                    );
-
-            AddTable("Marks",
-                @"[id] integer not null primary key autoincrement,
-                  [Date] nvarchar(15) not null,
-                  [mark] nvarchar(3) null,
-                  [goal_id] integer not null"
-                    );
+            this.dbContext = dbContext;
+            //!!!!!!!!!!!!! метод от балды. Надо задать имя базы данных
+            this.nameDataBase =  dbContext.Database.ProviderName;            
         }
 
-
-        /// <summary>
-        /// формат строки data - "первый столбец id(его не пишем и начинаем со второго столбца) 
-        ///второй столбец, третий, ..."
-        ///текстовые стрки пишем с одной кавычкой - 'текст'
-        /// </summary>
-        /// <param name="nameTable"></param>
-        /// <param name="data"></param>
-        public void AddData(string nameTable, string data)     
+        public void AddUser(string telegramId, string chatId, OperatingMode mode)
         {
-            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"INSERT INTO {nameTable} VALUES({NextId(nameTable)}, {data})";
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public void AddUser(string telegramId, string cahtId, OperatingMode mode)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"INSERT INTO Users VALUES({NextId("Users")}, '{telegramId}', '{cahtId}', '{mode}')";
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            dbContext.Users.Add(new User { TelegramId = telegramId, ChatId = chatId, OperatingMode = mode.ToString() });
+            dbContext.SaveChanges();
         }
 
         public void AddGoal(string goal, int userId)
         {
-            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"INSERT INTO Goals VALUES({NextId("Goals")}, '{goal}', {userId}, false)";
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            dbContext.Goals.Add(new Goal { Goal1 = goal, UserId = userId });
+            dbContext.SaveChanges();
         }
 
         public void AddMarks(int userId, string[] marks, List<int> goalsId)
         {
-            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
+            for (int i = 0; i < goalsId.Count; ++i)
             {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    for (int i = 0; i < goalsId.Count; ++i)
-                    {
-                        cmd.CommandText = $@"INSERT INTO Marks VALUES ({NextId("Marks")}, '{DateTime.Now.Date.ToShortDateString()}', '{marks[i]}', {goalsId[i]})";
-                        cmd.ExecuteNonQuery();
-                    }
-                }
+                dbContext.Marks.Add(new Mark { Date = DateTime.Now.ToShortDateString(), Mark1 = marks[i], GoalId = goalsId[i] });
             }
+            dbContext.SaveChanges();
         }
 
         public OperatingMode ChangeOperatingMode (int idUser, OperatingMode om)
         {
-            using (var connected = new SQLiteConnection($"Data Source = {nameDataBase}"))
-            {
-                connected.Open();
-                using (var cmd = connected.CreateCommand())
-                {
-                    cmd.CommandText = $"UPDATE Users SET operatingMode = '{om.ToString()}' WHERE id == {idUser}";
-                    cmd.ExecuteNonQuery();
-                }
-                return om;
-            }
-        }
+            (from user in dbContext.Users where user.Id == idUser select user).Single().OperatingMode = om.ToString();
+            dbContext.SaveChanges();
+            
+            return om;
+        }               
 
         public OperatingMode GetUserMod(int id)
         {
-            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
+            switch ((from user in dbContext.Users where user.Id == id select user.OperatingMode).Single())
             {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"SELECT operatingMode FROM Users WHERE id = {id}";
-
-                    using (var reader = cmd.ExecuteReader())
+                case "NON":
                     {
-                        reader.Read();
-                        switch (reader["operatingMode"].ToString())
-                        {
-                            case "NON":
-                                {
-                                    return OperatingMode.NON;
-                                }
-                            case "AddGoal":
-                                {
-                                    return OperatingMode.AddGoal;
-                                }
-                            case "DeleteGoal":
-                                {
-                                    return OperatingMode.DeleteGoal;
-                                }
-                            case "AddMark":
-                                return OperatingMode.AddMark;
-                            default:
-                                return OperatingMode.Error;
-                        }
+                        return OperatingMode.NON;
                     }
-                }
+                case "AddGoal":
+                    {
+                        return OperatingMode.AddGoal;
+                    }
+                case "DeleteGoal":
+                    {
+                        return OperatingMode.DeleteGoal;
+                    }
+                case "AddMark":
+                    return OperatingMode.AddMark;
+                default:
+                    return OperatingMode.Error;
             }
         }
 
+        //!!!!!!!!!!!!!!!! убрать этот метод
         public int NextId(string nameTable)
         {
             using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
@@ -178,131 +97,45 @@ namespace Goal_Achievement_Control_Windows_App.Core
             }
         }       //следующий id для ввода строки в базу данных
 
-        public int IdCurrentUser(int telegramId)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-
-                    //определение id в базе данных
-                    cmd.CommandText = $"SELECT id FROM Users WHERE telegramId == '{telegramId.ToString()}'";
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                        {
-                            reader.Read();
-                            return int.TryParse(reader["id"].ToString(), out int result) ? result : 0;
-                        }
-                        return 0;
-                    }
-                }
-            }
-        }
-
-        public void AddTable(string nameTable, string columnsWithAttributes)
-        {
-            using (var connection = new SQLiteConnection($"Data Source={NameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $@"CREATE TABLE IF NOT EXISTS [{nameTable}]({columnsWithAttributes});";
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public void ChangeOperatingMode(int userId, OperatingMode mode)
-        {
-            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"UPDATE Users SET operatingMode = '{mode}' WHERE id = {userId}";
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
+        public int IdCurrentUser(int telegramId) => 
+            (from user in dbContext.Users where int.Parse(user.TelegramId) == telegramId select (int)user.Id).SingleOrDefault();            
+        
+        public void AddTable(string nameTable, string columnsWithAttributes) { }
+        
         public Dictionary<string, string> GetTelegramIdUsers ()
         {
-                using (var Connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
-                {
-                    Connection.Open();
-                    using (var cmd = Connection.CreateCommand())
-                    {
-                        Dictionary<string, string> telegramIdUsers = new Dictionary<string, string>();
-                        cmd.CommandText = "SELECT telegramId, id from Users";
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                telegramIdUsers.Add(reader["telegramId"].ToString(), reader["id"].ToString());
-                            }
-                            return telegramIdUsers;
-                        }
-                    }
-                }
-            
+            Dictionary<string, string> telegramIdUsers = new Dictionary<string, string>();
+            var users = from user in dbContext.Users select new { user.TelegramId, user.Id };
+            foreach (var item in users)
+            {
+                telegramIdUsers.Add(item.TelegramId, item.Id.ToString());
+            }
+            return telegramIdUsers;
         }
 
         public Dictionary<int, string> GetGoals(int userId)
         {
-            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
+            Dictionary<int, string> resultate = new Dictionary<int, string>();
+            var goals = from goal in dbContext.Goals where goal.UserId == userId select new { goal.Id, goal.Goal1 };
+            foreach (var item in goals)
             {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"SELECT id, Goal FROM Goals WHERE userId == {userId}";
-                    cmd.ExecuteNonQuery();
-
-                    Dictionary<int, string> resultate = new Dictionary<int, string>();
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            resultate.Add(Convert.ToInt32(reader["id"]), reader["Goal"].ToString());
-                        }
-                        return resultate;
-                    }
-                }
+                resultate.Add((int)item.Id, item.Goal1);
             }
+            return resultate;
         }
 
         public string DeleteGoal(int userId, int goalIndex)
         {
             int indexForList = goalIndex - 1;
             List<string> goals = new List<string>(GetGoals(userId).Values);
-
-            using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"DELETE FROM Goals WHERE userId == {userId} AND Goal == '{goals[indexForList]}'";
-                    cmd.ExecuteNonQuery();
-                    return goals[indexForList] + " удалена";
-                }
-            }
+            dbContext.Goals.Remove((from goal in dbContext.Goals where goal.UserId == userId && goal.Goal1 == goals[indexForList] select goal).Single());
+            dbContext.SaveChanges();
+            
+            return goals[indexForList] + " удалена";
         }
 
-        public int CountGoals(int id)
-        {
-            using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
-            {
-                connection.Open();
-                using (var cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = $"SELECT Count (Goal) FROM Goals WHERE {id} == userId";
-                    cmd.CommandType = CommandType.Text;
-
-                    return Convert.ToInt32(cmd.ExecuteScalar());
-                }
-            }
-        }
+        public int CountGoals(int id) => (from goal in dbContext.Goals select goal).Count();
+            
 
         public string MarksLastFourWeeks(int userId)    //ID в базе данных приложения
         {
@@ -311,12 +144,22 @@ namespace Goal_Achievement_Control_Windows_App.Core
             List<KeyValuePair<string, double>> AVGMarks = new List<KeyValuePair<string, double>>();
             string resultate = null;
 
+            List<int> idGoals = new List<int>(goalsCurentUser.Keys);
+            for (int i = 0; i < goalsCurentUser.Count - 1; i++)
+            {
+                var items = (from user in dbContext.Users
+                             join goal in dbContext.Goals on user.Id equals goal.UserId
+                             join mark in dbContext.Marks on goal.Id equals mark.GoalId
+                             where goal.Id == idGoals[i]
+                             orderby goal.Id descending
+                             select new { user.TelegramId, goal.Goal1, mark.Date, mark.Mark1 }).Take(28); //28 дней = 4 недели
+            }
+
             using (var connection = new SQLiteConnection($"Data Source = {nameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    List<int> idGoals = new List<int>(goalsCurentUser.Keys);
                     for (int i = 0; i < idGoals.Count; i++)
                     {
 
@@ -362,15 +205,31 @@ namespace Goal_Achievement_Control_Windows_App.Core
         public string MarksAll(int userId)
         {
             Dictionary<int, string> goalsCurentUser = GetGoals(userId);
+            List<KeyValuePair<DateTime, int>> dateMarksWeek = new List<KeyValuePair<DateTime, int>>();
+            List<KeyValuePair<string, double>> AVGMarksWeeks = new List<KeyValuePair<string, double>>();
             List<KeyValuePair<DateTime, int>> dateMarksAll = new List<KeyValuePair<DateTime, int>>();
+            List<KeyValuePair<string, double>> AVGMarksMonths = new List<KeyValuePair<string, double>>();
             string resultate = null;
+
+            List<int> idGoals = new List<int>(goalsCurentUser.Keys);
+
+            for (int i = 0; i < goalsCurentUser.Count - 1; i++)
+            {
+                string tempResultate = goalsCurentUser[i].ToString() + "\n\n";
+
+                var marks = from user in dbContext.Users
+                            join goal in dbContext.Goals on user.Id equals goal.UserId
+                            join mark in dbContext.Marks on goal.Id equals mark.GoalId
+                            where goal.Id == idGoals[i]
+                            orderby goal.Id descending
+                            select new { user.TelegramId, goal.Goal1, mark.Date, mark.Mark1 };
+            }
 
             using (var connection = new SQLiteConnection($"Data Source = {NameDataBase}"))
             {
                 connection.Open();
                 using (var cmd = connection.CreateCommand())
                 {
-                    List<int> idGoals = new List<int>(goalsCurentUser.Keys);
                     for (int i = 0; i < goalsCurentUser.Count; i++)
                     {
                         string tempResultate = goalsCurentUser[idGoals[i]] + "\n\n";
